@@ -21,4 +21,5 @@ public interface AccountInterface {
 
     Account login(String username, String password);
     void logout();
+    void createAccount(String username, String password, String email, String firstName, String lastName, Date birthDate);
 }

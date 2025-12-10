@@ -11,7 +11,7 @@ public class Account implements AccountInterface {
 
     public Account() {}
 
-    public Account(String username, String password, String firstName, String lastName, String email, Date birthDate) {
+    public Account(String userName, String password, String firstName, String lastName, String email, Date birthDate) {
         this.userName = userName;
         this.password = password;
         this.firstName = firstName;
@@ -35,11 +35,13 @@ public class Account implements AccountInterface {
     public void setEmail(String email) {this.email = email;}
     public void setBirthDate(Date birthDate) {this.birthDate = birthDate;}
 
-    public int getUserCounts() {return userCounts;}
+    public static int getUserCounts() {return userCounts;}
 
     public Account login(String username, String password) {
         return new Account();
     }
 
     public void logout() {}
+
+    public void createAccount(String username, String password, String email, String firstName, String lastName, Date birthDate) {}
 }
