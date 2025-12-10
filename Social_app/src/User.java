@@ -43,10 +43,9 @@ public class User extends Account {
     }
 
     //still didn't decide how to handle these functions
-    public void makePost(String postTest, String imagePath){}
-
     public void addBio(String biotext) {}
 
 //  it will be uncommented when we create the Post class
+//    public void makePost(String postTest, String imagePath){}
 //    public void deletePost(Post post){}
 }
