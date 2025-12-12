@@ -7,7 +7,7 @@ public class Post {
     private String imagePath;
     private int likes;
     private User user;
-    private Date postCreationDate;
+    private final Date postCreationDate;
     private String postCategory;
     //waiting till Comment class is created
 //    private ArrayList<Comment> comments;
