@@ -2,15 +2,16 @@ import java.io.PipedOutputStream;
 import java.util.ArrayList;
 
 public class User extends Account {
+    private int userID;
     private String bio;
     private ArrayList<User> Followers;
     private ArrayList<User> Followings;
     private int followersCount;
     private int followingsCount;
-//  it will be uncommented when we create the Post class
-//  private ArrayList<Post> posts;
+    private ArrayList<Post> posts;
 
     // Getters
+    public int getUserID() { return userID; }
     public ArrayList<User> getFollowers() { return Followers; }
     public ArrayList<User> getFollowings() { return Followings; }
     public int getFollowersCount() { return followersCount; }
@@ -45,7 +46,6 @@ public class User extends Account {
     //still didn't decide how to handle these functions
     public void addBio(String biotext) {}
 
-//  it will be uncommented when we create the Post class
-//    public void makePost(String postTest, String imagePath){}
-//    public void deletePost(Post post){}
+    public void makePost(String postTest, String imagePath){}
+    public void deletePost(Post post){}
 }

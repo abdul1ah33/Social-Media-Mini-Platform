@@ -1,9 +1,11 @@
 import java.io.PipedOutputStream;
 
 public class Admin extends Account {
+    private int adminID;
+
+    public int getAdminID() { return adminID; }
 
     public void deleteUser(User user) {}
 
-    //  it will be uncommented when we create the Post class
-//    public void deletePost(User user, Post post) {}
+    public void deletePost(User user, Post post) {}
 }

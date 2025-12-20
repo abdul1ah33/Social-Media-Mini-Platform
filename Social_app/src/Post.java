@@ -9,8 +9,7 @@ public class Post {
     private User user;
     private final Date postCreationDate;
     private String postCategory;
-    //waiting till Comment class is created
-//    private ArrayList<Comment> comments;
+    private ArrayList<Comment> comments;
 
     public Post(String text, String imagePath, int likes, User user, String postCategory) {
         this.text = text;
