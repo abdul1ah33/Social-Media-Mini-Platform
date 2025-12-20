@@ -3,14 +3,11 @@ package dao;
 import model.User;
 import util.DBConnection;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class UserDAO {
 
-    public boolean createUser(User user) {
+    public boolean addUser(User user) {
         String sql = "INSERT INTO users (username, firstname, lastname, email, password, birthdate, bio) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try(Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -29,6 +26,37 @@ public class UserDAO {
         catch (SQLException e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public User getUser(int id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+
+        try(Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User user = new User();
+                user.setUserName(rs.getString("username"));
+                user.setFirstName(rs.getString("tnamfirse"));
+                user.setLastName(rs.getString("lastname"));
+                user.setEmail(rs.getString("email"));
+                user.setBio(rs.getString("bio"));
+                user.setBirthDate(rs.getDate("birthdate").toLocalDate());
+                return user;
+            }
+
+            System.out.println("No user with id " + id + " was found");
+            return null;
+
+        }
+        catch (SQLException e){
+//            e.printStackTrace();
+            System.out.println("NO USER FOUND");
+            return null;
         }
     }
 }
