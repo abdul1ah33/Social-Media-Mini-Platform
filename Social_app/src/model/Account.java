@@ -1,17 +1,21 @@
+package model;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Account implements AccountInterface {
+
     private String userName;
     private String password;
     private String firstName;
     private String lastName;
     private String email;
-    private Date birthDate;
+    private LocalDate birthDate;
     private static int userCounts = 0;
 
     public Account() {}
 
-    public Account(String userName, String password, String firstName, String lastName, String email, Date birthDate) {
+    public Account(String userName, String password, String firstName, String lastName, String email, LocalDate birthDate) {
         this.userName = userName;
         this.password = password;
         this.firstName = firstName;
@@ -26,14 +30,14 @@ public class Account implements AccountInterface {
     public String getFirstName() {return firstName;}
     public String getLastName() {return lastName;}
     public String getEmail() {return email;}
-    public Date getBirthDate() {return birthDate;}
+    public LocalDate getBirthDate() {return birthDate;}
 
     public void setUserName(String userName) {this.userName = userName;}
     public void setPassword(String password) {this.password = password;}
     public void setFirstName(String firstName) {this.firstName = firstName;}
     public void setLastName(String lastName) {this.lastName = lastName;}
     public void setEmail(String email) {this.email = email;}
-    public void setBirthDate(Date birthDate) {this.birthDate = birthDate;}
+    public void setBirthDate(LocalDate birthDate) {this.birthDate = birthDate;}
 
     public static int getUserCounts() {return userCounts;}
 

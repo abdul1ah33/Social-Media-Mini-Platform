@@ -1,3 +1,6 @@
+package model;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 public interface AccountInterface {
@@ -16,8 +19,8 @@ public interface AccountInterface {
     String getLastName();
     void setLastName(String name);
 
-    Date getBirthDate();
-    void setBirthDate(Date date);
+    LocalDate getBirthDate();
+    void setBirthDate(LocalDate date);
 
     Account login(String username, String password);
     void logout();

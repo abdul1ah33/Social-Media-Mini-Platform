@@ -1,8 +1,11 @@
+package model;
+
 import javax.xml.stream.events.Comment;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Post {
+
     private String text;
     private String imagePath;
     private int likes;

@@ -1,6 +1,7 @@
-import java.io.PipedOutputStream;
+package model;
 
 public class Admin extends Account {
+
     private int adminID;
 
     public int getAdminID() { return adminID; }

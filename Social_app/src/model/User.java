@@ -1,7 +1,9 @@
-import java.io.PipedOutputStream;
+package model;
+
 import java.util.ArrayList;
 
 public class User extends Account {
+
     private int userID;
     private String bio;
     private ArrayList<User> Followers;
