@@ -24,7 +24,9 @@ public class UserDAO {
             return numberOfRows > 0;
         }
         catch (SQLException e){
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.out.println("Could not add user");
+            System.out.println("SQLException: " + e.getMessage());
             return false;
         }
     }
