@@ -1,0 +1,95 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #fdfbfb, #ebedee);
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+.title-text {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-fill: #4A5568;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.subtitle-text {
+    -fx-font-size: 16px;
+    -fx-fill: #718096;
+    -fx-padding: 0 0 20 0;
+}
+
+.card-pane {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 10);
+    -fx-padding: 40;
+    -fx-max-width: 400;
+    -fx-alignment: center;
+}
+
+.text-field, .password-field {
+    -fx-background-color: #EDF2F7;
+    -fx-background-radius: 8;
+    -fx-border-width: 0;
+    -fx-padding: 12 15;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2D3748;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #667EEA;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 8;
+}
+
+.primary-button {
+    -fx-background-color: #667EEA;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-cursor: hand;
+    -fx-padding: 12 24;
+}
+
+.primary-button:hover {
+    -fx-background-color: #5A67D8;
+    -fx-effect: dropshadow(three-pass-box, rgba(102, 126, 234, 0.4), 10, 0, 0, 5);
+}
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #667EEA;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-padding: 8 16;
+}
+
+.secondary-button:hover {
+    -fx-text-fill: #5A67D8;
+    -fx-background-color: rgba(102, 126, 234, 0.1);
+    -fx-background-radius: 8;
+}
+
+.link-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #667EEA;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+    -fx-font-size: 13px;
+}
+
+.link-button:hover {
+    -fx-underline: true;
+}
+
+.error-label {
+    -fx-text-fill: #E53E3E;
+    -fx-font-size: 12px;
+}
+
+.separator-label {
+    -fx-text-fill: #A0AEC0;
+    -fx-font-size: 12px;
+}

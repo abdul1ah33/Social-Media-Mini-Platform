@@ -7,6 +7,7 @@ import java.sql.*;
 
 public class UserDAO {
 
+    // Add a user to the system
     public boolean addUser(User user) {
         String sql = "INSERT INTO users (username, firstname, lastname, email, password, birthdate, bio) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try(Connection conn = DBConnection.getConnection();
@@ -31,6 +32,7 @@ public class UserDAO {
         }
     }
 
+    // get a user from the system
     public User getUser(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
