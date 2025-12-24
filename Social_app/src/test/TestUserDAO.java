@@ -2,7 +2,6 @@ package test;
 
 import dao.UserDAO;
 import model.User;
-
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -15,10 +14,10 @@ public class TestUserDAO {
         if (input.nextInt() == 1) {
             // 1️⃣ Create a new User object
             User user = new User();
-            user.setUserName("hamo_elgamed");
+            user.setUserName("nour");
             user.setFirstName("Hamo");
             user.setLastName("elgamed");
-            user.setEmail("hamo.elga7ed@example.com");
+            user.setEmail("nour.ayman@example.com");
             user.setPassword("password123");
             user.setBirthDate(LocalDate.of(2000, 1, 15));
             user.setBio("Hello! I'm Hamo.");
