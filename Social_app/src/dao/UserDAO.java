@@ -5,10 +5,10 @@ import util.DBConnection;
 
 import java.sql.*;
 
-public class UserDAO {
+public class UserDAO implements DAOInterface<User> {
 
     // Add a user to the system
-    public boolean addUser(User user) {
+    public boolean add(User user) {
         String sql = "INSERT INTO users (username, firstname, lastname, email, password, birthdate, bio) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try(Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -33,7 +33,7 @@ public class UserDAO {
     }
 
     // get a user from the system
-    public User getUser(int id) {
+    public User getAccountDetails(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
         try(Connection conn = DBConnection.getConnection();
