@@ -9,8 +9,8 @@ public class DBConnection {
     private static final String URL =
             "jdbc:mysql://localhost:3306/social_media?useSSL=false&serverTimezone=Africa/Cairo";
 
-    private static final String USER = "root";
-    private static final String PASS = "bedo.2005";
+    private static final String USER = "admin";
+    private static final String PASS = "admin";
 
     private DBConnection() {}
 

@@ -26,7 +26,7 @@ public class TestUserDAO {
             UserDAO userDAO = new UserDAO();
 
             // 3️⃣ Call createUser and check result
-            boolean success = userDAO.addUser(user);
+            boolean success = userDAO.add(user);
 
             // 4️⃣ Print result
             if (success) {
@@ -36,7 +36,7 @@ public class TestUserDAO {
             }
         }
         else if (input.nextInt() == 2) {
-            User user2 = new UserDAO().getUser(2);
+            User user2 = new UserDAO().getAccountDetails(2);
             System.out.println(user2.getUserName() + " " + user2.getFirstName() + " " + user2.getLastName());
         }
     }
