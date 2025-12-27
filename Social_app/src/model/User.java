@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class User extends Account {
 
-    private int userID;
     private String bio;
     private ArrayList<User> Followers;
     private ArrayList<User> Followings;
@@ -13,7 +12,6 @@ public class User extends Account {
     private ArrayList<Post> posts;
 
     // Getters
-    public int getUserID() { return userID; }
     public ArrayList<User> getFollowers() { return Followers; }
     public ArrayList<User> getFollowings() { return Followings; }
     public int getFollowersCount() { return followersCount; }

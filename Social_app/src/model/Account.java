@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class Account implements AccountInterface {
 
+    private int ID;
     private String userName;
     private String password;
     private String firstName;
@@ -25,6 +26,7 @@ public class Account implements AccountInterface {
         userCounts++;
     }
 
+    private int getID() {  return ID; }
     public String getUserName() {return userName;}
     public String getPassword() {return password;}
     public String getFirstName() {return firstName;}

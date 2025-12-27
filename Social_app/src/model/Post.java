@@ -22,24 +22,22 @@ public class Post {
         this.postCategory = postCategory;
         this.postCreationDate = new Date();
     }
-
+    // Getters
     public String getText() {return text;}
-    public void setText(String text) {this.text = text;}
-
     public String getImagePath() {return imagePath;}
-    public void setImagePath(String imagePath) {this.imagePath = imagePath;}
-
     public int getLikes() {return likes;}
-    public void setLikes(int likes) {this.likes = likes;}
-
     public User getUser() {return user;}
-    public void setUser(User user) {this.user = user;}
-
     public Date getPostCreationDate() {return postCreationDate;}
-
     public String getPostCategory() {return postCategory;}
+
+    // Setters
+    public void setText(String text) {this.text = text;}
+    public void setImagePath(String imagePath) {this.imagePath = imagePath;}
+    public void setLikes(int likes) {this.likes = likes;}
+    public void setUser(User user) {this.user = user;}
     public void setPostCategory(String postCategory) {this.postCategory = postCategory;}
 
+    // Methods
     public void addComment(String commentContent, User user) {}
 
     public void removeComment(Comment comment) {}
