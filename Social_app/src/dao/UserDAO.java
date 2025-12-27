@@ -7,12 +7,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/* I know you will get frustrated from this file ya nour but dw
+    first 2 methods are like helper methods that will be used within the class to avoid redundant code
+    so that's why they are private
+    take a look at them
+    the rest are public methods and easy to guess quickly what are they doing and I put comments before each one
+ */
 public class UserDAO implements CRUDInterface<User> {
 
+    // it is used in many methods when we get data from db into user
     private User mapRowToUser(ResultSet rs) throws SQLException {
 
         User user = new User();
-
         user.setUserName(rs.getString("username"));
         user.setFirstName(rs.getString("firstname"));
         user.setLastName(rs.getString("lastname"));
@@ -23,6 +29,21 @@ public class UserDAO implements CRUDInterface<User> {
 
         return user;
     }
+
+    // generate question marks that will be used in getUsersByIds(List<Integer> ids)
+    private String generatePlaceholders(int size) {
+        if (size <= 0) return "";
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            sb.append("?");
+            if (i < size - 1) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
+    }
+
 
     // Add a user to the system
     public boolean add(User user) {
@@ -50,7 +71,7 @@ public class UserDAO implements CRUDInterface<User> {
         return false;
     }
 
-    // get a user from the system
+    // get a user from the system (just ONE user)
     public User getAccountDetails(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
@@ -75,6 +96,7 @@ public class UserDAO implements CRUDInterface<User> {
         }
     }
 
+    // Update a user on the system
     public boolean update(User user, int id) {
         StringBuilder sql = new StringBuilder("UPDATE users SET ");
         ArrayList<Object> values = new ArrayList<>();
@@ -141,6 +163,7 @@ public class UserDAO implements CRUDInterface<User> {
         return false;
     }
 
+    // Deletes a user from the system
     public boolean delete(int id) {
         String sql = "DELETE FROM users WHERE id = ?";
 
@@ -159,7 +182,7 @@ public class UserDAO implements CRUDInterface<User> {
         return false;
     }
 
-
+    // check if a user exists on the system
     public boolean exist(int id) {
         String sql = "SELECT id FROM users WHERE id = ?";
 
@@ -181,16 +204,14 @@ public class UserDAO implements CRUDInterface<User> {
         return false;
     }
 
+    // Returns array of User(S) based on an array of IDs
     public ArrayList<User> getUsersByIds(List<Integer> ids) {
 
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }
 
-        String placeholders = String.join(
-                ",",
-                ids.stream().map(id -> "?").toArray(size -> new String[size])
-        );
+        String placeholders = generatePlaceholders(ids.size());
 
         String sql = "SELECT * FROM users WHERE id IN (" + placeholders + ")";
 
@@ -212,6 +233,7 @@ public class UserDAO implements CRUDInterface<User> {
         catch (SQLException e){
 //            e.printStackTrace();
             System.out.println("Unable to execute query");
+            throw new RuntimeException("Failed to fetch users by IDs", e);
         }
 
         return users;

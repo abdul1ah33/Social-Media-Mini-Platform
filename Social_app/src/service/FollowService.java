@@ -17,15 +17,10 @@ public class FollowService {
 
     public ArrayList<User> getFollowers(int userID) {
 
-        if (!userDAO.exist(userID)) {throw new IllegalArgumentException("User does not exist");}
+        if (!userDAO.exist(userID)) { throw new IllegalArgumentException("User does not exist"); }
 
         ArrayList<Integer> followerIDs = followDAO.getFollowerIDs(userID);
-        ArrayList<User> followers = new ArrayList<>();
-        for (int id : followerIDs) {
-            User user = userDAO.getAccountDetails(id);
-            if (user != null) followers.add(user);
-        }
-        return followers;
+        return userDAO.getUsersByIds(followerIDs);
     }
 
 
@@ -34,12 +29,7 @@ public class FollowService {
         if (!userDAO.exist(userID)) {throw new IllegalArgumentException("User does not exist");}
 
         ArrayList<Integer> followingIDs = followDAO.getFollowingIDs(userID);
-        ArrayList<User> followings = new ArrayList<>();
-        for (int id : followingIDs) {
-            User user = userDAO.getAccountDetails(id);
-            if (user != null) followings.add(user);
-        }
-        return followings;
+        return userDAO.getUsersByIds(followingIDs);
     }
 
     public void followUser(int followerID, int followingID) {
