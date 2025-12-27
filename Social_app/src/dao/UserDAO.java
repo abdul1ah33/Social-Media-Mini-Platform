@@ -6,7 +6,7 @@ import util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class UserDAO implements DAOInterface<User> {
+public class UserDAO implements CRUDInterface<User> {
 
     // Add a user to the system
     public boolean add(User user) {

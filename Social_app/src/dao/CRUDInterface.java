@@ -1,8 +1,6 @@
 package dao;
 
-import model.User;
-
-public interface DAOInterface<T> {
+public interface CRUDInterface<T> {
 
     boolean add(T entity);
     T getAccountDetails(int id);

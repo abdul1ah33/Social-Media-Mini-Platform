@@ -4,8 +4,9 @@ import model.Admin;
 import model.User;
 import util.DBConnection;
 import java.sql.*;
+import java.util.ArrayList;
 
-public class AdminDAO implements DAOInterface<Admin>{
+public class AdminDAO implements CRUDInterface<Admin>{
 
     // Add an admin to the system
     @Override
@@ -63,6 +64,62 @@ public class AdminDAO implements DAOInterface<Admin>{
     }
 
     public boolean update(Admin admin, int id) {
+        StringBuilder sql = new StringBuilder("UPDATE admins SET ");
+        ArrayList<Object> values = new ArrayList<>();
+
+        if (admin.getUserName() != null) {
+            sql.append("username=?, ");
+            values.add(admin.getUserName());
+        }
+
+        if (admin.getFirstName() != null) {
+            sql.append("firstname=?, ");
+            values.add(admin.getFirstName());
+        }
+
+        if (admin.getLastName() != null) {
+            sql.append("lastname=?, ");
+            values.add(admin.getLastName());
+        }
+
+        if (admin.getEmail() != null) {
+            sql.append("email=?, ");
+            values.add(admin.getEmail());
+        }
+
+        if (admin.getPassword() != null) {
+            sql.append("password=?, ");
+            values.add(admin.getPassword());
+        }
+
+        if (admin.getBirthDate() != null) {
+            sql.append("birthdate=?, ");
+            values.add(admin.getBirthDate());
+        }
+
+        if (values.size() <= 0) {
+            return false;
+        }
+
+        sql.setLength(sql.length() - 2); // remove ", "
+        sql.append(" WHERE id = ?");
+        values.add(id);
+
+        try(Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < values.size(); i++) {
+                stmt.setObject(i + 1, values.get(i));
+            }
+
+            int numberOfRows = stmt.executeUpdate();
+            return numberOfRows > 0;
+        }
+
+        catch(SQLException e){
+            System.out.println("Could not update user");
+            System.out.println("SQLException: " + e.getMessage());
+        }
 
         return false;
     }
