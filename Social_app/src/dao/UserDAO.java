@@ -5,8 +5,24 @@ import util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserDAO implements CRUDInterface<User> {
+
+    private User mapRowToUser(ResultSet rs) throws SQLException {
+
+        User user = new User();
+
+        user.setUserName(rs.getString("username"));
+        user.setFirstName(rs.getString("firstname"));
+        user.setLastName(rs.getString("lastname"));
+        user.setEmail(rs.getString("email"));
+        user.setPassword(rs.getString("password"));
+        user.setBirthDate(rs.getDate("birthdate").toLocalDate());
+        user.setBio(rs.getString("bio"));
+
+        return user;
+    }
 
     // Add a user to the system
     public boolean add(User user) {
@@ -45,14 +61,7 @@ public class UserDAO implements CRUDInterface<User> {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                User user = new User();
-                user.setUserName(rs.getString("username"));
-                user.setFirstName(rs.getString("firstname"));
-                user.setLastName(rs.getString("lastname"));
-                user.setEmail(rs.getString("email"));
-                user.setBio(rs.getString("bio"));
-                user.setBirthDate(rs.getDate("birthdate").toLocalDate());
-                return user;
+                return mapRowToUser(rs);
             }
 
             System.out.println("No user with id " + id + " was found");
@@ -148,5 +157,63 @@ public class UserDAO implements CRUDInterface<User> {
         }
 
         return false;
+    }
+
+
+    public boolean exist(int id) {
+        String sql = "SELECT id FROM users WHERE id = ?";
+
+        try(Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return true;
+            }
+        }
+        catch(SQLException e){
+//          e.printStackTrace();
+            System.out.println("Unable to execute query");
+        }
+
+        return false;
+    }
+
+    public ArrayList<User> getUsersByIds(List<Integer> ids) {
+
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        String placeholders = String.join(
+                ",",
+                ids.stream().map(id -> "?").toArray(size -> new String[size])
+        );
+
+        String sql = "SELECT * FROM users WHERE id IN (" + placeholders + ")";
+
+        ArrayList<User> users = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            for (int i = 0; i < ids.size(); i++) {
+                stmt.setInt(i + 1, ids.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                users.add(mapRowToUser(rs));
+            }
+        }
+        catch (SQLException e){
+//            e.printStackTrace();
+            System.out.println("Unable to execute query");
+        }
+
+        return users;
     }
 }

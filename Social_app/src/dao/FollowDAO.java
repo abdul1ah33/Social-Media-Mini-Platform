@@ -96,6 +96,71 @@ public class FollowDAO {
         return null;
     }
 
+    /* THE FOLLOWING PART IS COMMENTED BEC OF BAD DESIGN PATTERN
+       INSTEAD I PUT IT IN FOLLOWSERVICE IN SERVICE FOLDER
+     */
+
+//    public ArrayList<User> getFollowings(int userID) {
+//        String sql = "SELECT u.* FROM users u JOIN follows f ON u.id = f.following_id WHERE f.follower_id = ?;";
+//
+//        try(Connection conn = DBConnection.getConnection();
+//            PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setInt(1, userID);
+//            ResultSet rs = stmt.executeQuery();
+//
+//            ArrayList<User> followings = new ArrayList<>();
+//            while(rs.next()) {
+//                User user = new User();
+//                user.setUserName(rs.getString("username"));
+//                user.setFirstName(rs.getString("firstname"));
+//                user.setLastName(rs.getString("lastname"));
+//                user.setEmail(rs.getString("email"));
+//                user.setBio(rs.getString("bio"));
+//                user.setBirthDate(rs.getDate("birthdate").toLocalDate());
+//                followings.add(user);
+//           }
+//            return followings;
+//        }
+//        catch (SQLException e){
+////            e.printStackTrace();
+//            System.out.println("No followings with UserID " + userID + " was found");
+//        }
+//
+//        return null;
+//    }
+//
+//
+//    public ArrayList<User> getFollowers(int userID) {
+//        String sql = "SELECT u.* FROM users u JOIN follows f ON u.id = f.follower_id WHERE f.following_id = ?;";
+//
+//        try(Connection conn = DBConnection.getConnection();
+//            PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setInt(1, userID);
+//            ResultSet rs = stmt.executeQuery();
+//
+//            ArrayList<User> followers = new ArrayList<>();
+//            while (rs.next()) {
+//                User user = new User();
+//                user.setUserName(rs.getString("username"));
+//                user.setFirstName(rs.getString("firstname"));
+//                user.setLastName(rs.getString("lastname"));
+//                user.setEmail(rs.getString("email"));
+//                user.setBio(rs.getString("bio"));
+//                user.setBirthDate(rs.getDate("birthdate").toLocalDate());
+//                followers.add(user);
+//            }
+//            return followers;
+//        }
+//        catch (SQLException e){
+////            e.printStackTrace();
+//            System.out.println("No followings with UserID " + userID + " was found");
+//        }
+//
+//        return null;
+//    }
+
 
     public boolean existFollow(int followerID, int followingID) {
         String sql = "SELECT * FROM follows WHERE follower_id = ? AND following_id = ?";
@@ -113,7 +178,7 @@ public class FollowDAO {
         }
         catch(SQLException e){
 //          e.printStackTrace();
-            System.out.println("NO follow relationship with FollowerID and FollowingID found");
+            System.out.println("Unable to execute query");
         }
 
         return false;

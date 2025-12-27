@@ -30,11 +30,11 @@ public class TestFollowDAO {
         System.out.println("getFollowerIDs for " + followingId + ": " + followers);
 
         // 5️ Test deleteFollow
-//        boolean deleted = followDAO.deleteFollow(followerId, followingId);
-//        System.out.println("deleteFollow: " + deleted);
+        boolean deleted = followDAO.deleteFollow(followerId, followingId);
+        System.out.println("deleteFollow: " + deleted);
 
         // 6️ Verify deletion
-//        exists = followDAO.existFollow(followerId, followingId);
-//        System.out.println("existFollow after deletion: " + exists);
+        exists = followDAO.existFollow(followerId, followingId);
+        System.out.println("existFollow after deletion: " + exists);
     }
 }
