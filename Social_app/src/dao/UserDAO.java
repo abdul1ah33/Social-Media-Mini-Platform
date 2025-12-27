@@ -104,7 +104,7 @@ public class UserDAO implements CRUDInterface<User> {
             values.add(user.getBio());
         }
 
-        if (values.size() <= 0) {
+        if (values.isEmpty()) {
             return false;
         }
 
@@ -126,6 +126,24 @@ public class UserDAO implements CRUDInterface<User> {
         catch(SQLException e){
             System.out.println("Could not update user");
             System.out.println("SQLException: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    public boolean delete(int id) {
+        String sql = "DELETE FROM users WHERE id = ?";
+
+        try(Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            int numberOfRows = stmt.executeUpdate();
+            return numberOfRows > 0;
+        }
+        catch(SQLException e){
+            System.out.println("Could not delete user");
         }
 
         return false;

@@ -52,9 +52,19 @@ public class TestUserDAO {
             boolean success = new UserDAO().update(useredit, 12);
 
             if (success) {
-                System.out.println("✅ User was created successfully!");
+                System.out.println("✅ User was updated successfully!");
             } else {
-                System.out.println("❌ Failed to create user.");
+                System.out.println("❌ Failed to updated user.");
+            }
+        }
+
+        else if (input.nextInt() == 4) {
+            boolean success = new UserDAO().delete(12);
+
+            if (success) {
+                System.out.println("✅ User was deleted successfully!");
+            } else {
+                System.out.println("❌ Failed to deleted user.");
             }
         }
     }

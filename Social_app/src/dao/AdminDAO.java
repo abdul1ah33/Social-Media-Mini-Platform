@@ -117,8 +117,26 @@ public class AdminDAO implements CRUDInterface<Admin>{
         }
 
         catch(SQLException e){
-            System.out.println("Could not update user");
+            System.out.println("Could not update admin");
             System.out.println("SQLException: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    public boolean delete(int id) {
+        String sql = "DELETE FROM admins WHERE id = ?";
+
+        try(Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            int numberOfRows = stmt.executeUpdate();
+            return numberOfRows > 0;
+        }
+        catch(SQLException e){
+            System.out.println("Could not delete admin");
         }
 
         return false;
