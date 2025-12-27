@@ -1,6 +1,7 @@
 package dao;
 
 import model.Admin;
+import model.User;
 import util.DBConnection;
 import java.sql.*;
 
@@ -59,5 +60,10 @@ public class AdminDAO implements DAOInterface<Admin>{
             System.out.println("NO USER FOUND");
             return null;
         }
+    }
+
+    public boolean update(Admin admin, int id) {
+
+        return false;
     }
 }

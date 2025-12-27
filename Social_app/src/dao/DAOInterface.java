@@ -6,5 +6,5 @@ public interface DAOInterface<T> {
 
     boolean add(T entity);
     T getAccountDetails(int id);
-//    String update();
+    boolean update(T entity, int id);
 }

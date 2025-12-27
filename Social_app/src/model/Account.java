@@ -26,7 +26,7 @@ public class Account implements AccountInterface {
         userCounts++;
     }
 
-    private int getID() {  return ID; }
+    public int getID() {  return ID; }
     public String getUserName() {return userName;}
     public String getPassword() {return password;}
     public String getFirstName() {return firstName;}

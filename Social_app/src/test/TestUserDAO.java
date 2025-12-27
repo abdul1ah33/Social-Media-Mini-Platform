@@ -39,5 +39,23 @@ public class TestUserDAO {
             User user2 = new UserDAO().getAccountDetails(2);
             System.out.println(user2.getUserName() + " " + user2.getFirstName() + " " + user2.getLastName());
         }
+        else if (input.nextInt() == 3) {
+            User useredit = new User();
+//            useredit.setUserName("nour_ayman");
+//            useredit.setFirstName("Nour");
+//            useredit.setLastName("Ayman");
+//            useredit.setEmail("nour.ayman1@example.com");
+//            useredit.setPassword("password123");
+            useredit.setBirthDate(LocalDate.of(2005, 3, 15));
+//            useredit.setBio("Hello! I'm Nour.");
+
+            boolean success = new UserDAO().update(useredit, 12);
+
+            if (success) {
+                System.out.println("✅ User was created successfully!");
+            } else {
+                System.out.println("❌ Failed to create user.");
+            }
+        }
     }
 }

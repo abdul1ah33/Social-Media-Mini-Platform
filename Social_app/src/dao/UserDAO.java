@@ -4,6 +4,7 @@ import model.User;
 import util.DBConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class UserDAO implements DAOInterface<User> {
 
@@ -62,5 +63,71 @@ public class UserDAO implements DAOInterface<User> {
             System.out.println("NO USER FOUND");
             return null;
         }
+    }
+
+    public boolean update(User user, int id) {
+        StringBuilder sql = new StringBuilder("UPDATE users SET ");
+        ArrayList<Object> values = new ArrayList<>();
+
+        if (user.getUserName() != null) {
+            sql.append("username=?, ");
+            values.add(user.getUserName());
+        }
+
+        if (user.getFirstName() != null) {
+            sql.append("firstname=?, ");
+            values.add(user.getFirstName());
+        }
+
+        if (user.getLastName() != null) {
+            sql.append("lastname=?, ");
+            values.add(user.getLastName());
+        }
+
+        if (user.getEmail() != null) {
+            sql.append("email=?, ");
+            values.add(user.getEmail());
+        }
+
+        if (user.getPassword() != null) {
+            sql.append("password=?, ");
+            values.add(user.getPassword());
+        }
+
+        if (user.getBirthDate() != null) {
+            sql.append("birthdate=?, ");
+            values.add(user.getBirthDate());
+        }
+
+        if (user.getBio() != null) {
+            sql.append("bio=?, ");
+            values.add(user.getBio());
+        }
+
+        if (values.size() <= 0) {
+            return false;
+        }
+
+        sql.setLength(sql.length() - 2); // remove ", "
+        sql.append(" WHERE id = ?");
+        values.add(id);
+
+        try(Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < values.size(); i++) {
+                stmt.setObject(i + 1, values.get(i));
+            }
+
+            int numberOfRows = stmt.executeUpdate();
+            return numberOfRows > 0;
+        }
+
+        catch(SQLException e){
+            System.out.println("Could not update user");
+            System.out.println("SQLException: " + e.getMessage());
+        }
+
+        return false;
     }
 }
