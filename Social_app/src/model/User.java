@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class User extends Account {
 
+    // Attributes
     private String bio;
     private ArrayList<User> Followers;
     private ArrayList<User> Followings;

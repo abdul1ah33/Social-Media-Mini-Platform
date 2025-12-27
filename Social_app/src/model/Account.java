@@ -26,6 +26,8 @@ public class Account implements AccountInterface {
         userCounts++;
     }
 
+    // Getters
+    public static int getUserCounts() {return userCounts;}
     public int getID() {  return ID; }
     public String getUserName() {return userName;}
     public String getPassword() {return password;}
@@ -34,6 +36,7 @@ public class Account implements AccountInterface {
     public String getEmail() {return email;}
     public LocalDate getBirthDate() {return birthDate;}
 
+    // Setters
     public void setUserName(String userName) {this.userName = userName;}
     public void setPassword(String password) {this.password = password;}
     public void setFirstName(String firstName) {this.firstName = firstName;}
@@ -41,8 +44,7 @@ public class Account implements AccountInterface {
     public void setEmail(String email) {this.email = email;}
     public void setBirthDate(LocalDate birthDate) {this.birthDate = birthDate;}
 
-    public static int getUserCounts() {return userCounts;}
-
+    // methods
     public Account login(String username, String password) {
         return new Account();
     }

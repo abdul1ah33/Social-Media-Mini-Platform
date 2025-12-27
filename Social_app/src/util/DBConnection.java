@@ -4,6 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/* el database connection
+    string url w user w pass
+    Connection class: responsible for the connection between DB and app
+    DriverManger: responsible for establishing the connection itself
+ */
 public class DBConnection {
 
     private static final String URL =

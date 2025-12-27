@@ -96,7 +96,13 @@ public class UserDAO implements CRUDInterface<User> {
         }
     }
 
-    // Update a user on the system
+    /* Update a user on the system
+       it updates based on demand for example:
+       if Nour wants to change her username to Malak so the sql statement will be: UPDATE users SET username=Malak WHERE id=2;
+       but if Nour wants to change her pass so the sql statement will be: UPDATE users SET password=nour123 WHERE id=2;
+
+       so the update method is adapting based on the parameters itself
+     */
     public boolean update(User user, int id) {
         StringBuilder sql = new StringBuilder("UPDATE users SET ");
         ArrayList<Object> values = new ArrayList<>();

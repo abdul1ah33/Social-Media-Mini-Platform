@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Post {
-
+    // attributes
     private String text;
     private String imagePath;
     private int likes;
@@ -14,6 +14,7 @@ public class Post {
     private String postCategory;
     private ArrayList<Comment> comments;
 
+    // Constructor
     public Post(String text, String imagePath, int likes, User user, String postCategory) {
         this.text = text;
         this.imagePath = imagePath;
@@ -22,6 +23,7 @@ public class Post {
         this.postCategory = postCategory;
         this.postCreationDate = new Date();
     }
+
     // Getters
     public String getText() {return text;}
     public String getImagePath() {return imagePath;}

@@ -4,24 +4,24 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public interface AccountInterface {
+
+    // Getters
     String getUserName();
-    void setUserName(String name);
-
     String getPassword();
-    void setPassword(String password);
-
     String getEmail();
-    void setEmail(String email);
-
     String getFirstName();
-    void setFirstName(String name);
-
     String getLastName();
-    void setLastName(String name);
-
     LocalDate getBirthDate();
+
+    // Setters
+    void setUserName(String name);
+    void setPassword(String password);
+    void setEmail(String email);
+    void setFirstName(String name);
+    void setLastName(String name);
     void setBirthDate(LocalDate date);
 
+    // Methods
     Account login(String username, String password);
     void logout();
     void createAccount(String username, String password, String email, String firstName, String lastName, Date birthDate);

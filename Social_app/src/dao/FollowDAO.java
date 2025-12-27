@@ -6,8 +6,12 @@ import util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 
+/* if you understands userdao so this class will be easy
+    basically it manage all follow functions to and from db
+ */
 public class FollowDAO {
 
+    // insert a follow relation between follower and following
     public boolean insertFollow(int followerID, int followingID) {
         String sql = "INSERT INTO follows (follower_id, following_id) VALUES (?, ?)";
 
@@ -28,7 +32,7 @@ public class FollowDAO {
         }
     }
 
-
+    // Delete
     public boolean deleteFollow(int followerID, int followingID) {
         String sql = "DELETE FROM follows WHERE follower_id = ? AND following_id = ?";
 
@@ -48,7 +52,7 @@ public class FollowDAO {
         return false;
     }
 
-
+    // returns an array of IDs of a specific user followings
     public ArrayList<Integer> getFollowingIDs(int userID) {
         String sql = "SELECT following_id FROM follows WHERE follower_id = ?";
 
@@ -72,7 +76,7 @@ public class FollowDAO {
         return null;
     }
 
-
+    // returns an array of IDs of a specific user followers
     public ArrayList<Integer> getFollowerIDs(int userID) {
         String sql = "SELECT follower_id FROM follows WHERE following_id = ?";
 
@@ -161,7 +165,7 @@ public class FollowDAO {
 //        return null;
 //    }
 
-
+    // checks if a follow relation exists
     public boolean existFollow(int followerID, int followingID) {
         String sql = "SELECT * FROM follows WHERE follower_id = ? AND following_id = ?";
 
