@@ -29,8 +29,9 @@ public class UserDAO implements CRUDInterface<User> {
 //            e.printStackTrace();
             System.out.println("Could not add user");
             System.out.println("SQLException: " + e.getMessage());
-            return false;
         }
+
+        return false;
     }
 
     // get a user from the system

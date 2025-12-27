@@ -14,13 +14,13 @@ public class TestUserDAO {
         if (input.nextInt() == 1) {
             // 1️⃣ Create a new User object
             User user = new User();
-            user.setUserName("nour");
-            user.setFirstName("Hamo");
-            user.setLastName("elgamed");
-            user.setEmail("nour.ayman@example.com");
-            user.setPassword("password123");
+            user.setUserName("Nour");
+            user.setFirstName("Nour");
+            user.setLastName("Ayman");
+            user.setEmail("Nour.Ayman@example.com");
+            user.setPassword("password");
             user.setBirthDate(LocalDate.of(2000, 1, 15));
-            user.setBio("Hello! I'm Hamo.");
+            user.setBio("Hello! I'm Nour1.");
 
             // 2️⃣ Create UserDAO instance
             UserDAO userDAO = new UserDAO();

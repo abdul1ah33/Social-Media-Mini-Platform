@@ -29,8 +29,9 @@ public class AdminDAO implements CRUDInterface<Admin>{
 //            e.printStackTrace();
             System.out.println("Could not add admin");
             System.out.println("SQLException: " + e.getMessage());
-            return false;
         }
+
+        return false;
     }
 
     public Admin getAccountDetails(int id) {
