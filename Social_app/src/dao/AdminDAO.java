@@ -1,12 +1,11 @@
 package dao;
 
 import model.Admin;
-import model.User;
 import util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 /* Da el admin
-   bosi 3la class el user and you will understand admin cause it have same methods till now
+   bosi 3la class el user ,and you will understand admin because it has same methods till now
 */
 public class AdminDAO implements CRUDInterface<Admin>{
 
@@ -36,7 +35,7 @@ public class AdminDAO implements CRUDInterface<Admin>{
         return false;
     }
 
-    // get a admin from the system (just ONE Admin)
+    // get an admin from the system (just ONE Admin)
     public Admin getAccountDetails(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
@@ -67,7 +66,7 @@ public class AdminDAO implements CRUDInterface<Admin>{
         }
     }
 
-    // Update data (look at userdao for better understanding)
+    // Update data (look at UserDAO for better understanding)
     public boolean update(Admin admin, int id) {
         StringBuilder sql = new StringBuilder("UPDATE admins SET ");
         ArrayList<Object> values = new ArrayList<>();
@@ -102,7 +101,7 @@ public class AdminDAO implements CRUDInterface<Admin>{
             values.add(admin.getBirthDate());
         }
 
-        if (values.size() <= 0) {
+        if ( values.isEmpty() ) {
             return false;
         }
 
