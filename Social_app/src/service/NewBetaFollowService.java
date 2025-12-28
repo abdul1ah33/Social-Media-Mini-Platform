@@ -64,47 +64,6 @@ public class NewBetaFollowService {
 //    }
 
     // Set a follow connection, look how we are handling exceptions in this layer, and how we are calling DAO methods
-    public void followUser(int followerID, int followingID) {
-
-        Connection conn = null;
-        try {
-            conn = DBConnection.getConnection();
-            conn.setAutoCommit(false);
-
-            if (followerID == followingID) throw new IllegalArgumentException("User cannot follow himself");
-            if (!userDAO.exist(conn, followerID)) throw new IllegalArgumentException("follower does not exist");
-            if (!userDAO.exist(conn, followingID)) throw new IllegalArgumentException("following does not exist");
-            if (followDAO.existFollow(conn, followerID, followingID))
-                throw new IllegalArgumentException("Following is already followed");
-
-            boolean success = followDAO.insertFollow(conn, followerID, followingID);
-            if (!success) { throw new RuntimeException("Failed to follow user"); }
-
-            conn.commit();
-        }
-        catch (Exception e) {
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                }
-                catch(SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    // Remove the follow connection
     public void unfollowUser(int followerID, int followingID) {
 
         Connection conn = null;
@@ -134,6 +93,7 @@ public class NewBetaFollowService {
                     ex.printStackTrace();
                 }
             }
+            throw new RuntimeException(e.getMessage(), e);
         }
         finally {
             if (conn != null) {
@@ -145,9 +105,17 @@ public class NewBetaFollowService {
             }
         }
     }
-//
-//    // Checks if there is a connection or not
-//    public boolean isFollowing(int followerID, int followingID) {
-//        return followDAO.existFollow(followerID, followingID);
-//    }
+    //
+    // Checks if there is a connection or not
+    public boolean isFollowing(int followerID, int followingID) {
+        try (Connection conn = DBConnection.getConnection())
+        {
+            return followDAO.existFollow(conn, followerID, followingID);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }
