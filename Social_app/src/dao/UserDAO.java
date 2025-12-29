@@ -71,7 +71,7 @@ public class UserDAO implements CRUDInterface<User> {
     }
 
     // get a user from the system (just ONE user)
-    public User getAccountDetails(int id) {
+    public User getDetails(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
         try(Connection conn = DBConnection.getConnection();

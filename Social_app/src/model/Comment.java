@@ -3,6 +3,7 @@ package model;
 import java.time.LocalDateTime;
 
 public class Comment {
+
     private static int commentCounter = 0;
     private String content;
     private User user;

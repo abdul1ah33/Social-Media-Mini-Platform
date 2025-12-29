@@ -36,7 +36,7 @@ public class AdminDAO implements CRUDInterface<Admin>{
     }
 
     // get an admin from the system (just ONE Admin)
-    public Admin getAccountDetails(int id) {
+    public Admin getDetails(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
         try(Connection conn = DBConnection.getConnection();

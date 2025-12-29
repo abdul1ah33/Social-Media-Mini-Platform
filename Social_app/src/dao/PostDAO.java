@@ -8,6 +8,7 @@ import java.sql.*;
 import java.time.LocalDate;
 
 public class PostDAO implements CRUDInterface<Post>{
+
     private Post mapRowToPost(ResultSet rs) throws SQLException {
         Post post = new Post();
         post.setText(rs.getString("text"));
@@ -38,12 +39,12 @@ public class PostDAO implements CRUDInterface<Post>{
         try(Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+            java.sql.Date sqlDate = java.sql.Date.valueOf(post.getPostCreationDate());
+
             stmt.setString(1, post.getText());
             stmt.setString(2, post.getImagePath());
             stmt.setInt(3, post.getLikes());
-            User user = post.getUser();
-            stmt.setString(4, user.getUserName());
-            java.sql.Date sqlDate = java.sql.Date.valueOf(post.getPostCreationDate());
+            stmt.setInt(4, post.getUserID());
             stmt.setDate(5, sqlDate);
             stmt.setString(6, post.getPostCategory());
 
@@ -51,12 +52,9 @@ public class PostDAO implements CRUDInterface<Post>{
             return numberOfRows > 0;
         }
         catch (SQLException e){
-//            e.printStackTrace();
-            System.out.println("Could not add post");
-            System.out.println("SQLException: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        return false;
     }
 
     @Override
@@ -70,7 +68,7 @@ public class PostDAO implements CRUDInterface<Post>{
     }
 
     @Override
-    public Post getAccountDetails(int id) {
+    public Post getDetails(int id) {
         return null;
     }
 }

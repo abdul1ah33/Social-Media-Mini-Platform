@@ -36,7 +36,7 @@ public class TestUserDAO {
             }
         }
         else if (input.nextInt() == 2) {
-            User user2 = new UserDAO().getAccountDetails(2);
+            User user2 = new UserDAO().getDetails(2);
             System.out.println(user2.getUserName() + " " + user2.getFirstName() + " " + user2.getLastName());
         }
         else if (input.nextInt() == 3) {
