@@ -149,11 +149,22 @@ public class PostDAO implements CRUDInterface<Post>{
     }
 
 
-    public ArrayList<Post> getUserPosts(Connection conn ,int userID) {
-        ArrayList<Post> posts = new ArrayList<>();
-        return posts;
-    }
+
+//    int getPostsCountByUser(Connection conn, int userId){
+//
+//    }
+
+
+//    public ArrayList<Post> getUserPosts(Connection conn ,int userID) {
+//        ArrayList<Post> posts = new ArrayList<>();
+//        return posts;
+//    }
 
 //    public boolean addLike(int postID) {
+//
+//    }
+
+//    public boolean removeLike(int postID){
+//
 //    }
 }
