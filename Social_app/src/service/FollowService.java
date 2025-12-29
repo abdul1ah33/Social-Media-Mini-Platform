@@ -5,7 +5,6 @@ import model.User;
 import dao.FollowDAO;
 import util.DBConnection;
 
-import javax.swing.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -45,78 +44,90 @@ public class FollowService {
 
     // It returns arraylist of type USERS (followers)
     public ArrayList<User> getFollowers(int userID) {
+        try (Connection conn = DBConnection.getConnection()) {
 
-        Connection conn = null;
-
-        try {
-            conn = DBConnection.getConnection();
-
-            if (!userDAO.exist(conn ,userID)) { throw new IllegalArgumentException("User does not exist"); }
+            if (!userDAO.exist(conn, userID)) {
+                throw new IllegalArgumentException("User does not exist");
+            }
 
             ArrayList<Integer> followerIDs = followDAO.getFollowerIDs(conn, userID);
             return userDAO.getUsersByIds(conn, followerIDs);
 
-        }
-        catch (Exception e) {
-            if (conn != null) {
-                try {
-                    conn.close();
-                }
-                catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            throw new IllegalArgumentException("User does not exist");
-        }
-        finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                }
-                catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while fetching followers", e);
         }
     }
 
     // It returns arraylist of type USERS (followings)
     public ArrayList<User> getFollowings(int userID) {
+        try (Connection conn = DBConnection.getConnection()) {
+
+            if (!userDAO.exist(conn, userID)) {
+                throw new IllegalArgumentException("User does not exist");
+            }
+
+            ArrayList<Integer> followingIDs = followDAO.getFollowingIDs(conn, userID);
+            return userDAO.getUsersByIds(conn, followingIDs);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while fetching followings", e);
+        }
+    }
+
+    // Sets a follow connection, look how we are handling exceptions in this layer, and how we are calling DAO methods
+    public void followUser(int followerID, int followingID) {
 
         Connection conn = null;
 
         try {
             conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
 
-            if (!userDAO.exist(conn ,userID)) {throw new IllegalArgumentException("User does not exist");}
+            if (followerID == followingID)
+                throw new IllegalArgumentException("User cannot follow himself");
 
-            ArrayList<Integer> followingIDs = followDAO.getFollowingIDs(conn, userID);
-            return userDAO.getUsersByIds(conn,followingIDs);
-        }
-        catch (Exception e) {
+            if (!userDAO.exist(conn, followerID))
+                throw new IllegalArgumentException("Follower does not exist");
+
+            if (!userDAO.exist(conn, followingID))
+                throw new IllegalArgumentException("Following does not exist");
+
+            if (followDAO.existFollow(conn, followerID, followingID))
+                throw new IllegalArgumentException("User is already followed");
+
+            boolean success = followDAO.insertFollow(conn, followerID, followingID);
+            if (!success)
+                throw new RuntimeException("Failed to follow user");
+
+            conn.commit();
+
+        } catch (SQLException e) {
+
             if (conn != null) {
                 try {
-                    conn.close();
-                }
-                catch (SQLException ex) {
+                    conn.rollback();
+                } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
-            throw new IllegalArgumentException("User does not exist");
-        }
-        finally {
+
+            throw new RuntimeException("Database error during follow", e);
+
+        } finally {
+
             if (conn != null) {
                 try {
                     conn.close();
-                }
-                catch (SQLException ex) {
-                    ex.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
         }
     }
 
-    // Set a follow connection, look how we are handling exceptions in this layer, and how we are calling DAO methods
+
+
+    // removes a follow connection
     public void unfollowUser(int followerID, int followingID) {
 
         Connection conn = null;
@@ -138,7 +149,7 @@ public class FollowService {
 
             conn.commit();
         }
-        catch(Exception e){
+        catch(SQLException e){
             if (conn != null) {
                 try {
                     conn.rollback();
@@ -161,14 +172,38 @@ public class FollowService {
     //
     // Checks if there is a connection or not
     public boolean isFollowing(int followerID, int followingID) {
-        try (Connection conn = DBConnection.getConnection())
-        {
+        try (Connection conn = DBConnection.getConnection()) {
             return followDAO.existFollow(conn, followerID, followingID);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to check follow status", e);
         }
-        catch(SQLException e){
-            e.printStackTrace();
-        }
-
-        return false;
     }
+
+    public int getFollowersCount(int userID) {
+        try (Connection conn = DBConnection.getConnection()) {
+
+            if (!userDAO.exist(conn, userID))
+                throw new IllegalArgumentException("User does not exist");
+
+            return followDAO.getFollowersCount(conn, userID);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get followers count", e);
+        }
+    }
+
+
+    public int getFollowingsCount(int userID) {
+        try (Connection conn = DBConnection.getConnection()) {
+
+            if (!userDAO.exist(conn, userID))
+                throw new IllegalArgumentException("User does not exist");
+
+            return followDAO.getFollowingsCount(conn, userID);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get followings count", e);
+        }
+    }
+
 }

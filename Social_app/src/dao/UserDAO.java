@@ -5,7 +5,6 @@ import util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 /* I know you will get frustrated from this file ya nour but dw
     first 2 methods are like helper methods that will be used within the class to avoid redundant code

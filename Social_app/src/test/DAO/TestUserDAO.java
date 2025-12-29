@@ -1,4 +1,4 @@
-package test;
+package test.DAO;
 
 import dao.UserDAO;
 import model.User;

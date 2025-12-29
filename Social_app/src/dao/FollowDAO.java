@@ -1,12 +1,9 @@
 package dao;
 
-import model.User;
-import util.DBConnection;
-
 import java.sql.*;
 import java.util.ArrayList;
 
-/* if you understands userdao so this class will be easy
+/* if you understand UserDAO so this class will be easy
     basically it manage all follow functions to and from db
  */
 public class FollowDAO {
@@ -67,10 +64,8 @@ public class FollowDAO {
         }
         catch (SQLException e){
 //            e.printStackTrace();
-            System.out.println("No followings with UserID " + userID + " was found");
+            throw new RuntimeException("No followings with UserID " + userID + " found");
         }
-
-        return null;
     }
 
     // returns an array of IDs of a specific user followers
@@ -90,10 +85,8 @@ public class FollowDAO {
         }
         catch (SQLException e){
 //            e.printStackTrace();
-            System.out.println("No followings with UserID " + userID + " was found");
+            throw new RuntimeException("No followings with UserID " + userID + " was found");
         }
-
-        return null;
     }
 
     /* THE FOLLOWING PART IS COMMENTED BEC OF BAD DESIGN PATTERN
@@ -163,7 +156,7 @@ public class FollowDAO {
 
     // checks if a follow relation exists
     public boolean existFollow(Connection conn, int followerID, int followingID) {
-        String sql = "SELECT * FROM follows WHERE follower_id = ? AND following_id = ?";
+        String sql = "SELECT 1 FROM follows WHERE follower_id = ? AND following_id = ?";
 
         try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -175,11 +168,41 @@ public class FollowDAO {
                 return true;
             }
         }
-        catch(SQLException e){
-//          e.printStackTrace();
-            System.out.println("Unable to execute query");
+        catch(SQLException e) {
+            throw new RuntimeException("Failed to check follow existence", e);
         }
 
         return false;
+    }
+
+    public int getFollowersCount(Connection conn, int userID) throws SQLException {
+
+        String sql = "SELECT COUNT(*) FROM follows WHERE following_id = ?";
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+
+        return 0;
+    }
+
+
+    public int getFollowingsCount(Connection conn, int userID) throws SQLException{
+
+        String sql = "SELECT COUNT(*) FROM follows WHERE follower_id = ?";
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+
+        return 0;
     }
 }
