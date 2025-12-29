@@ -189,11 +189,10 @@ public class UserDAO implements CRUDInterface<User> {
     }
 
     // check if a user exists on the system
-    public boolean exist(int id) {
+    public boolean exist(Connection conn, int id) {
         String sql = "SELECT id FROM users WHERE id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -211,7 +210,7 @@ public class UserDAO implements CRUDInterface<User> {
     }
 
     // Returns array of User(S) based on an array of IDs
-    public ArrayList<User> getUsersByIds(List<Integer> ids) {
+    public ArrayList<User> getUsersByIds(Connection conn, ArrayList<Integer> ids) {
 
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
@@ -223,8 +222,7 @@ public class UserDAO implements CRUDInterface<User> {
 
         ArrayList<User> users = new ArrayList<>();
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             for (int i = 0; i < ids.size(); i++) {
                 stmt.setInt(i + 1, ids.get(i));
@@ -245,3 +243,4 @@ public class UserDAO implements CRUDInterface<User> {
         return users;
     }
 }
+

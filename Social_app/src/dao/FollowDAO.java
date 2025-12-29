@@ -12,11 +12,10 @@ import java.util.ArrayList;
 public class FollowDAO {
 
     // insert a follow relation between follower and following
-    public boolean insertFollow(int followerID, int followingID) {
+    public boolean insertFollow(Connection conn, int followerID, int followingID) {
         String sql = "INSERT INTO follows (follower_id, following_id) VALUES (?, ?)";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, followerID);
             stmt.setInt(2, followingID);
@@ -33,11 +32,10 @@ public class FollowDAO {
     }
 
     // Delete
-    public boolean deleteFollow(int followerID, int followingID) {
+    public boolean deleteFollow(Connection conn, int followerID, int followingID) {
         String sql = "DELETE FROM follows WHERE follower_id = ? AND following_id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, followerID);
             stmt.setInt(2, followingID);
@@ -53,11 +51,10 @@ public class FollowDAO {
     }
 
     // returns an array of IDs of a specific user followings
-    public ArrayList<Integer> getFollowingIDs(int userID) {
+    public ArrayList<Integer> getFollowingIDs(Connection conn, int userID) {
         String sql = "SELECT following_id FROM follows WHERE follower_id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, userID);
             ResultSet rs = stmt.executeQuery();
@@ -77,11 +74,10 @@ public class FollowDAO {
     }
 
     // returns an array of IDs of a specific user followers
-    public ArrayList<Integer> getFollowerIDs(int userID) {
+    public ArrayList<Integer> getFollowerIDs(Connection conn, int userID) {
         String sql = "SELECT follower_id FROM follows WHERE following_id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, userID);
             ResultSet rs = stmt.executeQuery();
@@ -158,7 +154,7 @@ public class FollowDAO {
 //            return followers;
 //        }
 //        catch (SQLException e){
-////            e.printStackTrace();
+    ////            e.printStackTrace();
 //            System.out.println("No followings with UserID " + userID + " was found");
 //        }
 //
@@ -166,11 +162,10 @@ public class FollowDAO {
 //    }
 
     // checks if a follow relation exists
-    public boolean existFollow(int followerID, int followingID) {
+    public boolean existFollow(Connection conn, int followerID, int followingID) {
         String sql = "SELECT * FROM follows WHERE follower_id = ? AND following_id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, followerID);
             stmt.setInt(2, followingID);
