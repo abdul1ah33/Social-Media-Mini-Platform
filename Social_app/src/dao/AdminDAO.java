@@ -36,6 +36,7 @@ public class AdminDAO implements CRUDInterface<Admin>{
     }
 
     // get an admin from the system (just ONE Admin)
+    @Override
     public Admin getDetails(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
@@ -67,6 +68,7 @@ public class AdminDAO implements CRUDInterface<Admin>{
     }
 
     // Update data (look at UserDAO for better understanding)
+    @Override
     public boolean update(Admin admin, int id) {
         StringBuilder sql = new StringBuilder("UPDATE admins SET ");
         ArrayList<Object> values = new ArrayList<>();
@@ -129,6 +131,7 @@ public class AdminDAO implements CRUDInterface<Admin>{
     }
 
     // delete 3ady
+    @Override
     public boolean delete(int id) {
         String sql = "DELETE FROM admins WHERE id = ?";
 

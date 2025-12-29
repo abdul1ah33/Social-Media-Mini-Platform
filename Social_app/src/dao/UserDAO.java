@@ -45,6 +45,7 @@ public class UserDAO implements CRUDInterface<User> {
 
 
     // Add a user to the system
+    @Override
     public boolean add(User user) {
         String sql = "INSERT INTO users (username, firstname, lastname, email, password, birthdate, bio) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try(Connection conn = DBConnection.getConnection();
@@ -71,6 +72,7 @@ public class UserDAO implements CRUDInterface<User> {
     }
 
     // get a user from the system (just ONE user)
+    @Override
     public User getDetails(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
@@ -102,6 +104,7 @@ public class UserDAO implements CRUDInterface<User> {
 
        so the update method is adapting based on the parameters itself
      */
+    @Override
     public boolean update(User user, int id) {
         StringBuilder sql = new StringBuilder("UPDATE users SET ");
         ArrayList<Object> values = new ArrayList<>();
@@ -169,6 +172,7 @@ public class UserDAO implements CRUDInterface<User> {
     }
 
     // Deletes a user from the system
+    @Override
     public boolean delete(int id) {
         String sql = "DELETE FROM users WHERE id = ?";
 
