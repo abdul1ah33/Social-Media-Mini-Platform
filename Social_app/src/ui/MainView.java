@@ -74,7 +74,7 @@ public class MainView {
 
         Circle avatar = new Circle(20, Color.web("#667EEA"));
         Text usernameText = new Text(currentUser.getUserName());
-        usernameText.setStyle("-fx-font-weight: bold; -fx-fill: #2D3748;");
+        usernameText.setStyle("-fx-font-weight: bold; -fx-fill: #f8fafc;");
         
         userInfo.getChildren().addAll(avatar, usernameText);
 
