@@ -130,4 +130,26 @@ public class PostService {
             if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
+
+    public ArrayList<Post> getUserPosts(int userId) {
+        try (Connection conn = DBConnection.getConnection()) {
+            if (!userDAO.exist(conn, userId)) {
+                throw new IllegalArgumentException("User does not exist");
+            }
+            return postDAO.getPostsByUser(conn, userId);
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while fetching posts", e);
+        }
+    }
+
+    public int getUserPostsCount(int userId) {
+        try (Connection conn = DBConnection.getConnection()) {
+            if (!userDAO.exist(conn, userId)) {
+                throw new IllegalArgumentException("User does not exist");
+            }
+            return postDAO.getPostsCountByUser(conn, userId);
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while counting posts", e);
+        }
+    }
 }
