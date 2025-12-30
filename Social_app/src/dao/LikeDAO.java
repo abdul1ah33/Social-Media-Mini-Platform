@@ -1,6 +1,8 @@
 package dao;
 
 import model.Like;
+import util.DBConnection;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -80,6 +82,20 @@ public class LikeDAO {
                 likes.add(like);
             }
             return likes;
+        }
+    }
+
+    public boolean deleteLikesByPost(Connection conn, int postId) throws SQLException {
+        String sql = "DELETE FROM post_likes WHERE post_id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, postId);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete likes for post " + postId, e);
         }
     }
 }

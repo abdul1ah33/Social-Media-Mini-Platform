@@ -57,6 +57,26 @@ public class PostDAO implements CRUDInterface<Post> {
         }
     }
 
+    public boolean exist(Connection conn, int id) {
+        String sql = "SELECT id FROM posts WHERE id = ?";
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return true;
+            }
+        }
+        catch(SQLException e){
+//          e.printStackTrace();
+            System.out.println("Unable to execute query");
+        }
+
+        return false;
+    }
+
 
     @Override
     public Post getDetails(Connection conn, int id) {
@@ -129,6 +149,11 @@ public class PostDAO implements CRUDInterface<Post> {
         String sql = "DELETE FROM posts WHERE id = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            CommentDAO commentDAO = new CommentDAO();
+            LikeDAO likeDAO = new LikeDAO();
+
+            commentDAO.deleteCommentsByPost(conn, id);
+            likeDAO.deleteLikesByPost(conn, id);
 
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;

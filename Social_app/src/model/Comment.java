@@ -11,6 +11,7 @@ public class Comment {
     private int commentID;
     private LocalDateTime commentTime;
 
+    public Comment(){}
     public Comment(String content, User user, int postID) {
         this.content = content;
         this.user = user;

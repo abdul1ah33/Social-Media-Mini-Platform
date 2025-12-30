@@ -49,11 +49,10 @@ public class CommentDAO implements CRUDInterface<Comment> {
     }
 
     @Override
-    public boolean add(Comment comment) {
+    public boolean add(Connection conn, Comment comment) {
         String sql = "INSERT INTO comments (post_id, user_id, content, created_at) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             if (comment.getUser() == null || comment.getUser().getID() <= 0) {
                 throw new IllegalArgumentException("Comment must have a valid user with ID");
@@ -89,11 +88,10 @@ public class CommentDAO implements CRUDInterface<Comment> {
     }
 
     @Override
-    public Comment getDetails(int id) {
+    public Comment getDetails(Connection conn, int id) {
         String sql = "SELECT c.*, u.* FROM comments c JOIN users u ON c.user_id = u.id WHERE c.id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -111,11 +109,10 @@ public class CommentDAO implements CRUDInterface<Comment> {
     }
 
     @Override
-    public boolean update(Comment comment, int id) {
+    public boolean update(Connection conn, Comment comment, int id) {
         String sql = "UPDATE comments SET content = ? WHERE id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, comment.getContent());
             stmt.setInt(2, id);
@@ -129,11 +126,10 @@ public class CommentDAO implements CRUDInterface<Comment> {
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(Connection conn, int id) {
         String sql = "DELETE FROM comments WHERE id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
@@ -211,11 +207,10 @@ public class CommentDAO implements CRUDInterface<Comment> {
         }
     }
 
-    public boolean deleteCommentsByPost(int postId) {
+    public boolean deleteCommentsByPost(Connection conn, int postId) {
         String sql = "DELETE FROM comments WHERE post_id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, postId);
             return stmt.executeUpdate() > 0;

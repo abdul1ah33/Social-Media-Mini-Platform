@@ -27,7 +27,7 @@ public class TestPostDAO {
             newPost.setPostCategory("General");
             newPost.setPostCreationDate(LocalDateTime.now());
 
-            boolean added = postDAO.add(newPost);
+            boolean added = postDAO.add(conn, newPost);
             System.out.println("Post added: " + added);
 
             System.out.println("\n=== GET POSTS BY USER TEST ===");
@@ -42,16 +42,16 @@ public class TestPostDAO {
             System.out.println("Posts count for user " + userId + ": " + count);
 
             System.out.println("\n=== GET POST DETAILS TEST ===");
-            Post fetched = postDAO.getDetails(postId);
+            Post fetched = postDAO.getDetails(conn, postId);
             System.out.println("Fetched Post ID: " + fetched.getPostID() + ", Text: " + fetched.getText());
 
             System.out.println("\n=== UPDATE POST TEST ===");
             fetched.setText("Updated test post");
-            boolean updated = postDAO.update(fetched, postId);
+            boolean updated = postDAO.update(conn, fetched, postId);
             System.out.println("Post updated: " + updated);
 
             System.out.println("\n=== DELETE POST TEST ===");
-            boolean deleted = postDAO.delete(postId);
+            boolean deleted = postDAO.delete(conn, postId);
             System.out.println("Post deleted: " + deleted);
 
         } catch (SQLException e) {

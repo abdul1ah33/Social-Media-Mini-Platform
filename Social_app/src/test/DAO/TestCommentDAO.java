@@ -32,7 +32,7 @@ public class TestCommentDAO {
             newPost.setPostCategory("General");
             newPost.setPostCreationDate(LocalDateTime.now());
 
-            boolean postAdded = postDAO.add(newPost);
+            boolean postAdded = postDAO.add(conn, newPost);
             System.out.println("Test post created: " + postAdded);
 
             // Get the post ID that was just created
@@ -47,7 +47,7 @@ public class TestCommentDAO {
 
             Comment newComment = new Comment("Test comment text", testUser, postId);
 
-            boolean added = commentDAO.add(newComment);
+            boolean added = commentDAO.add(conn, newComment);
             System.out.println("Comment added: " + added);
 
             System.out.println("\n=== GET COMMENTS BY POST TEST ===");
@@ -62,20 +62,20 @@ public class TestCommentDAO {
             System.out.println("Comments count for post " + postId + ": " + count);
 
             System.out.println("\n=== GET COMMENT DETAILS TEST ===");
-            Comment fetched = commentDAO.getDetails(commentId);
+            Comment fetched = commentDAO.getDetails(conn, commentId);
             System.out.println("Fetched Comment ID: " + fetched.getCommentID() + ", Content: " + fetched.getContent());
 
             System.out.println("\n=== UPDATE COMMENT TEST ===");
             fetched.setContent("Updated test comment");
-            boolean updated = commentDAO.update(fetched, commentId);
+            boolean updated = commentDAO.update(conn, fetched, commentId);
             System.out.println("Comment updated: " + updated);
 
             System.out.println("\n=== DELETE COMMENT TEST ===");
-            boolean deleted = commentDAO.delete(commentId);
+            boolean deleted = commentDAO.delete(conn, commentId);
             System.out.println("Comment deleted: " + deleted);
 
             System.out.println("\n=== DELETE TEST POST ===");
-            boolean postDeleted = postDAO.delete(postId);
+            boolean postDeleted = postDAO.delete(conn, postId);
             System.out.println("Test post deleted: " + postDeleted);
 
         } catch (SQLException e) {
