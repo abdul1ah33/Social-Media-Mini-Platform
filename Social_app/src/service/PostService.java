@@ -1,5 +1,6 @@
 package service;
 
+import dao.FollowDAO;
 import dao.PostDAO;
 import dao.UserDAO;
 import model.Post;
@@ -150,6 +151,60 @@ public class PostService {
             return postDAO.getPostsCountByUser(conn, userId);
         } catch (SQLException e) {
             throw new RuntimeException("Database error while counting posts", e);
+        }
+    }
+
+
+    /*
+     this is the function we will use to get the feed of a certain user
+     it sorts the post in descending order of time "recent ones first"
+     --------------------------------------------------------------------
+     FollowDAO is used directly to get followings.
+     postDAO.getPostsByUser fetches posts per following.
+     --------------------------------------------------------------------
+     Empty feed if the user follows nobody.
+     */
+    public ArrayList<Post> getFeedPosts(int userId) {
+        try (Connection conn = DBConnection.getConnection()) {
+            if (!userDAO.exist(conn, userId)) {
+                throw new IllegalArgumentException("User does not exist");
+            }
+
+            ArrayList<Integer> followingIds = new FollowDAO().getFollowingIDs(conn, userId);
+
+            ArrayList<Post> feedPosts = new ArrayList<>();
+
+            for (int i = 0; i < followingIds.size(); i++) {
+                int followingId = followingIds.get(i);
+                ArrayList<Post> posts = postDAO.getPostsByUser(conn, followingId);
+                for (int j = 0; j < posts.size(); j++) {
+                    feedPosts.add(posts.get(j));
+                }
+            }
+
+            for (int i = 0; i < feedPosts.size() - 1; i++) {
+                for (int j = i + 1; j < feedPosts.size(); j++) {
+                    if (feedPosts.get(i).getPostCreationDate().isBefore(feedPosts.get(j).getPostCreationDate())) {
+                        Post temp = feedPosts.get(i);
+                        feedPosts.set(i, feedPosts.get(j));
+                        feedPosts.set(j, temp);
+                    }
+                }
+            }
+
+            return feedPosts;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while preparing feed for user " + userId, e);
+        }
+    }
+
+    public boolean postExists(int postId) {
+        try (Connection conn = DBConnection.getConnection()) {
+            Post post = postDAO.getDetails(postId);
+            return post != null;
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while checking post existence", e);
         }
     }
 }

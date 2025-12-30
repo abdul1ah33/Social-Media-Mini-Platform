@@ -84,7 +84,10 @@ DROP TABLE IF EXISTS `follows`;
 CREATE TABLE `follows` (
   `follower_id` int NOT NULL,
   `following_id` int NOT NULL,
-  PRIMARY KEY (`follower_id`,`following_id`)
+  PRIMARY KEY (`follower_id`,`following_id`),
+  KEY `fk_following` (`following_id`),
+  CONSTRAINT `fk_follower` FOREIGN KEY (`follower_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_following` FOREIGN KEY (`following_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -94,7 +97,37 @@ CREATE TABLE `follows` (
 
 LOCK TABLES `follows` WRITE;
 /*!40000 ALTER TABLE `follows` DISABLE KEYS */;
+INSERT INTO `follows` VALUES (13,14);
 /*!40000 ALTER TABLE `follows` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `post_likes`
+--
+
+DROP TABLE IF EXISTS `post_likes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `post_likes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `post_id` int NOT NULL,
+  `liked_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`,`post_id`),
+  KEY `post_id` (`post_id`),
+  CONSTRAINT `post_likes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `post_likes_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `post_likes`
+--
+
+LOCK TABLES `post_likes` WRITE;
+/*!40000 ALTER TABLE `post_likes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `post_likes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -109,7 +142,6 @@ CREATE TABLE `posts` (
   `user_id` int NOT NULL,
   `text` text NOT NULL,
   `image_path` varchar(500) DEFAULT NULL,
-  `likes` int NOT NULL DEFAULT '0',
   `post_category` varchar(50) DEFAULT NULL,
   `post_creation_date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -146,7 +178,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_users_username` (`username`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,7 +187,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (2,'hamada_doe','John','Doe','john.doe@example.com','password123','2000-01-15','Hello! I\'m John.'),(8,'hamo_elgamed','Hamo','elgamed','hamo.elga7ed@example.com','password123','2000-01-15','Hello! I\'m Hamo.');
+INSERT INTO `users` VALUES (2,'hamada_doe','John','Doe','john.doe@example.com','password123','2000-01-15','Hello! I\'m John.'),(8,'hamo_elgamed','Hamo','elgamed','hamo.elga7ed@example.com','password123','2000-01-15','Hello! I\'m Hamo.'),(13,'Abdullah','Abdullah','Ahmed','abdullah.ahmed@example.com','password123','2000-01-15','Hello! I\'m Abdullah.'),(14,'Nour','Nour','Ayman','Nour.Ayman@example.com','password','2000-01-15','Hello! I\'m Nour.');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -168,4 +200,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-24 12:06:50
+-- Dump completed on 2025-12-30  5:22:52
