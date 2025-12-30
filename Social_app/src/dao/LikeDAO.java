@@ -44,6 +44,28 @@ public class LikeDAO {
         }
     }
 
+    public ArrayList<Integer> getUserIdsWhoLikedPost(Connection conn, int postId) {
+
+        String sql = "SELECT user_id FROM post_likes WHERE post_id = ?";
+        ArrayList<Integer> userIds = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, postId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                userIds.add(rs.getInt("user_id"));
+            }
+
+            return userIds;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get user IDs who liked post " + postId, e);
+        }
+    }
+
+
     public ArrayList<Like> getLikesByPost(Connection conn, int postId) throws SQLException {
         String sql = "SELECT * FROM post_likes WHERE post_id = ?";
         ArrayList<Like> likes = new ArrayList<>();
