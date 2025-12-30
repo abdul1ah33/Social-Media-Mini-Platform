@@ -211,4 +211,21 @@ public class PostDAO implements CRUDInterface<Post> {
             throw new RuntimeException("Failed to count posts for user " + userId, e);
         }
     }
+    public ArrayList<Post> getRecentPosts(Connection conn, int limit) {
+        String sql = "SELECT * FROM posts ORDER BY post_creation_date DESC LIMIT ?";
+        ArrayList<Post> posts = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                posts.add(mapRowToPost(rs));
+            }
+            return posts;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to fetch recent posts", e);
+        }
+    }
 }

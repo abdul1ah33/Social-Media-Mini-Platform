@@ -12,6 +12,7 @@ public class Account implements AccountInterface {
     private String lastName;
     private String email;
     private LocalDate birthDate;
+    private String profilePicturePath;
     private static int userCounts = 0;
 
     public Account() {}
@@ -44,6 +45,8 @@ public class Account implements AccountInterface {
     public void setEmail(String email) {this.email = email;}
     public void setBirthDate(LocalDate birthDate) {this.birthDate = birthDate;}
     public void setID(int ID) { this.ID = ID; }
+    public String getProfilePicturePath() { return profilePicturePath; }
+    public void setProfilePicturePath(String profilePicturePath) { this.profilePicturePath = profilePicturePath; }
 
     // methods
     public Account login(String username, String password) {

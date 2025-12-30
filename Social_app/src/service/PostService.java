@@ -207,4 +207,12 @@ public class PostService {
             throw new RuntimeException("Database error while checking post existence", e);
         }
     }
+
+    public ArrayList<Post> getRecentPosts(int limit) {
+        try (Connection conn = DBConnection.getConnection()) {
+            return postDAO.getRecentPosts(conn, limit);
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while fetching recent posts", e);
+        }
+    }
 }

@@ -63,4 +63,40 @@ public class UserService {
     }
 
 
+    // Login
+    public User login(String username, String password) {
+        try (Connection conn = DBConnection.getConnection()) {
+            User user = userDAO.getUserByUsername(conn, username);
+            if (user != null && user.getPassword().equals(password)) {
+                return user;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Login failed due to database error", e);
+        }
+        return null;
+    }
+
+    public java.util.ArrayList<User> searchUsers(String query) {
+        try (Connection conn = DBConnection.getConnection()) {
+            return userDAO.searchUsers(conn, query);
+        } catch (SQLException e) {
+            throw new RuntimeException("Search failed", e);
+        }
+    }
+    public boolean updateBio(User user, String newBio) {
+        try (Connection conn = DBConnection.getConnection()) {
+            user.setBio(newBio);
+            return userDAO.update(conn, user, user.getID());
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update bio", e);
+        }
+    }
+    public boolean updateProfilePicture(User user, String newPicturePath) {
+        try (Connection conn = DBConnection.getConnection()) {
+            user.setProfilePicturePath(newPicturePath);
+            return userDAO.update(conn, user, user.getID());
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update profile picture", e);
+        }
+    }
 }

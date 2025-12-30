@@ -25,6 +25,14 @@ public class UserDAO implements CRUDInterface<User> {
         user.setPassword(rs.getString("password"));
         user.setBirthDate(rs.getDate("birthdate").toLocalDate());
         user.setBio(rs.getString("bio"));
+        
+        // Safely get profile_picture (may not exist in older database schemas)
+        try {
+            user.setProfilePicturePath(rs.getString("profile_picture"));
+        } catch (SQLException e) {
+            // Column doesn't exist yet, ignore
+            user.setProfilePicturePath(null);
+        }
 
         return user;
     }
@@ -141,6 +149,11 @@ public class UserDAO implements CRUDInterface<User> {
         if (user.getBio() != null) {
             sql.append("bio=?, ");
             values.add(user.getBio());
+        }
+
+        if (user.getProfilePicturePath() != null) {
+            sql.append("profile_picture=?, ");
+            values.add(user.getProfilePicturePath());
         }
 
         if (values.isEmpty()) {
@@ -287,6 +300,46 @@ public class UserDAO implements CRUDInterface<User> {
             throw new RuntimeException("Failed to fetch users by IDs", e);
         }
 
+        return users;
+    }
+    // Get user by username (for login)
+    public User getUserByUsername(Connection conn, String username) {
+        String sql = "SELECT * FROM users WHERE username = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User user = mapRowToUser(rs);
+                user.setID(rs.getInt("id"));
+                return user;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching user by username: " + e.getMessage());
+        }
+        return null;
+    }
+    public ArrayList<User> searchUsers(Connection conn, String query) {
+        String sql = "SELECT * FROM users WHERE username LIKE ? OR firstname LIKE ? OR lastname LIKE ?";
+        ArrayList<User> users = new ArrayList<>();
+        String searchPattern = "%" + query + "%";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            stmt.setString(3, searchPattern);
+            
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                User user = mapRowToUser(rs);
+                user.setID(rs.getInt("id"));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error searching users: " + e.getMessage());
+        }
         return users;
     }
 }

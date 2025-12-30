@@ -62,4 +62,10 @@ public class CommentService {
             throw new RuntimeException("Database error while checking comment existence", e);
         }
     }
+    public java.util.ArrayList<Comment> getCommentsByPost(int postId) {
+        return commentDAO.getCommentsByPost(postId);
+    }
+    public int getCommentCountByPost(int postId) {
+        return commentDAO.getCommentCountByPost(postId);
+    }
 }
