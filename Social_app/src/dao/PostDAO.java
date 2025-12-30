@@ -1,73 +1,77 @@
 package dao;
 
 import model.Post;
-import model.User;
 import util.DBConnection;
 
 import java.sql.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class PostDAO implements CRUDInterface<Post>{
+public class PostDAO implements CRUDInterface<Post> {
 
+    /* ==========================
+       ROW MAPPING
+       ========================== */
     private Post mapRowToPost(ResultSet rs) throws SQLException {
 
-        LocalDate localDate = rs.getDate("date").toLocalDate();
-
         Post post = new Post();
+        post.setPostID(rs.getInt("id"));
+        post.setUserID(rs.getInt("user_id"));
         post.setText(rs.getString("text"));
-        post.setImagePath(rs.getString("imagePath"));
-        post.setPostCategory(rs.getString("category"));
-        post.setLikes(rs.getInt("likes"));
-        post.setPostCreationDate(localDate);
+        post.setImagePath(rs.getString("image_path"));
+        post.setPostCategory(rs.getString("post_category"));
+
+        Timestamp ts = rs.getTimestamp("post_creation_date");
+        if (ts != null) {
+            post.setPostCreationDate(ts.toLocalDateTime());
+        }
 
         return post;
     }
 
-    private String generatePlaceholders(int size) {
-
-        if (size <= 0) return "";
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < size; i++) {
-            sb.append("?");
-            if (i < size - 1) {
-                sb.append(", ");
-            }
-        }
-        return sb.toString();
-    }
-
+    /* ==========================
+       CREATE
+       ========================== */
+    @Override
     public boolean add(Post post) {
 
-        String sql = "INSERT INTO posts (text, imagepath, likes, user, creationDate, category) VALUES (?, ?, ?, ?, ?, ?)";
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = """
+            INSERT INTO posts
+            (user_id, text, image_path, post_category, post_creation_date)
+            VALUES (?, ?, ?, ?, ?)
+        """;
 
-            java.sql.Date sqlDate = java.sql.Date.valueOf(post.getPostCreationDate());
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, post.getText());
-            stmt.setString(2, post.getImagePath());
-            stmt.setInt(3, post.getLikes());
-            stmt.setInt(4, post.getUserID());
-            stmt.setDate(5, sqlDate);
-            stmt.setString(6, post.getPostCategory());
+            stmt.setInt(1, post.getUserID());
+            stmt.setString(2, post.getText());
+            stmt.setString(3, post.getImagePath());
+            stmt.setString(4, post.getPostCategory());
 
-            int numberOfRows = stmt.executeUpdate();
-            return numberOfRows > 0;
-        }
-        catch (SQLException e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            if (post.getPostCreationDate() != null) {
+                stmt.setTimestamp(5, Timestamp.valueOf(post.getPostCreationDate()));
+            } else {
+                stmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+            }
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to add post", e);
         }
     }
 
+    /* ==========================
+       READ (by ID)
+       ========================== */
     @Override
     public Post getDetails(int id) {
+
         String sql = "SELECT * FROM posts WHERE id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -76,33 +80,34 @@ public class PostDAO implements CRUDInterface<Post>{
                 return mapRowToPost(rs);
             }
 
-            System.out.println("No user with id " + id + " was found");
             return null;
 
-        }
-        catch (SQLException e){
-//            e.printStackTrace();
-            throw new RuntimeException("unable to get post");
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get post with id " + id, e);
         }
     }
 
+    /* ==========================
+       UPDATE (PATCH STYLE)
+       ========================== */
     @Override
     public boolean update(Post post, int id) {
-        StringBuilder sql = new StringBuilder("UPDATE users SET ");
+
+        StringBuilder sql = new StringBuilder("UPDATE posts SET ");
         ArrayList<Object> values = new ArrayList<>();
 
         if (post.getText() != null) {
-            sql.append("firstname=?, ");
+            sql.append("text = ?, ");
             values.add(post.getText());
         }
 
         if (post.getImagePath() != null) {
-            sql.append("lastname=?, ");
+            sql.append("image_path = ?, ");
             values.add(post.getImagePath());
         }
 
         if (post.getPostCategory() != null) {
-            sql.append("email=?, ");
+            sql.append("post_category = ?, ");
             values.add(post.getPostCategory());
         }
 
@@ -110,61 +115,93 @@ public class PostDAO implements CRUDInterface<Post>{
             return false;
         }
 
-        sql.setLength(sql.length() - 2); // remove ", "
+        sql.setLength(sql.length() - 2); // remove last ", "
         sql.append(" WHERE id = ?");
         values.add(id);
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < values.size(); i++) {
                 stmt.setObject(i + 1, values.get(i));
             }
 
-            int numberOfRows = stmt.executeUpdate();
-            return numberOfRows > 0;
-        }
+            return stmt.executeUpdate() > 0;
 
-        catch(SQLException e){
-            throw new RuntimeException("unable to update post");
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update post with id " + id, e);
         }
     }
 
-
+    /* ==========================
+       DELETE
+       ========================== */
     @Override
     public boolean delete(int id) {
+
         String sql = "DELETE FROM posts WHERE id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
 
-            int numberOfRows = stmt.executeUpdate();
-            return numberOfRows > 0;
-        }
-        catch(SQLException e){
-            throw new RuntimeException("unable to delete post");
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete post with id " + id, e);
         }
     }
 
+    /* ==========================
+       POSTS BY USER
+       ========================== */
+    public ArrayList<Post> getPostsByUser(Connection conn, int userId) {
 
+        String sql = """
+            SELECT *
+            FROM posts
+            WHERE user_id = ?
+            ORDER BY post_creation_date DESC
+        """;
 
-//    int getPostsCountByUser(Connection conn, int userId){
-//
-//    }
+        ArrayList<Post> posts = new ArrayList<>();
 
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-//    public ArrayList<Post> getUserPosts(Connection conn ,int userID) {
-//        ArrayList<Post> posts = new ArrayList<>();
-//        return posts;
-//    }
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
 
-//    public boolean addLike(int postID) {
-//
-//    }
+            while (rs.next()) {
+                posts.add(mapRowToPost(rs));
+            }
 
-//    public boolean removeLike(int postID){
-//
-//    }
+            return posts;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to fetch posts for user " + userId, e);
+        }
+    }
+
+    /* ==========================
+       POSTS COUNT BY USER
+       ========================== */
+    public int getPostsCountByUser(Connection conn, int userId) {
+
+        String sql = "SELECT COUNT(*) FROM posts WHERE user_id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+            return 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to count posts for user " + userId, e);
+        }
+    }
 }
