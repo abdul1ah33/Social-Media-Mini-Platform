@@ -43,6 +43,7 @@ public class Account implements AccountInterface {
     public void setLastName(String lastName) {this.lastName = lastName;}
     public void setEmail(String email) {this.email = email;}
     public void setBirthDate(LocalDate birthDate) {this.birthDate = birthDate;}
+    public void setID(int ID) { this.ID = ID; }
 
     // methods
     public Account login(String username, String password) {

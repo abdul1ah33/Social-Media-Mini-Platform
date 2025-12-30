@@ -33,4 +33,12 @@ public class Comment {
     public void setCommentID() {this.commentID = commentCounter++;}
 
     public void deleteComment(){}
+
+    public void setCommentIDDirectly(int id) {
+        this.commentID = id;
+    }
+
+    public void setCommentTimeDirectly(LocalDateTime time) {
+        this.commentTime = time;
+    }
 }
