@@ -72,11 +72,37 @@ public class MainView {
         userInfo.setAlignment(Pos.CENTER_LEFT);
         userInfo.setPadding(new Insets(0, 0, 20, 0));
 
-        Circle avatar = new Circle(20, Color.web("#667EEA"));
+        // Avatar
+        javafx.scene.image.ImageView avatar = new javafx.scene.image.ImageView();
+        avatar.setFitWidth(40);
+        avatar.setFitHeight(40);
+        avatar.setPreserveRatio(true);
+        javafx.scene.shape.Circle clip = new javafx.scene.shape.Circle(20, 20, 20);
+        avatar.setClip(clip);
+
+        boolean hasPic = false;
+        if (currentUser.getProfilePicturePath() != null && !currentUser.getProfilePicturePath().isEmpty()) {
+            try {
+                java.io.File file = new java.io.File(currentUser.getProfilePicturePath());
+                if (file.exists()) {
+                    avatar.setImage(new javafx.scene.image.Image(file.toURI().toString()));
+                    hasPic = true;
+                }
+            } catch (Exception e) { e.printStackTrace(); }
+        }
+
+        if (!hasPic) {
+            // Default Circle
+            Circle defaultAvatar = new Circle(20, Color.web("#667EEA"));
+            userInfo.getChildren().addAll(defaultAvatar);
+        } else {
+             userInfo.getChildren().add(avatar);
+        }
+
         Text usernameText = new Text(currentUser.getUserName());
         usernameText.setStyle("-fx-font-weight: bold; -fx-fill: #f8fafc;");
         
-        userInfo.getChildren().addAll(avatar, usernameText);
+        userInfo.getChildren().add(usernameText);
 
         // Navigation
         homeBtn = createNavButton("Home", "home-icon"); // Icon can be added later

@@ -68,4 +68,12 @@ public class CommentService {
     public int getCommentCountByPost(int postId) {
         return commentDAO.getCommentCountByPost(postId);
     }
+    
+    public void deleteComment(int commentId) {
+        try (Connection conn = DBConnection.getConnection()) {
+            commentDAO.delete(conn, commentId);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete comment", e);
+        }
+    }
 }

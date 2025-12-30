@@ -183,7 +183,10 @@ public class ProfileView {
         new Thread(() -> {
             try {
                 ArrayList<User> followers = followService.getFollowers(user.getID());
-                Platform.runLater(() -> new UserListModal(((Stage) rootContainer.getScene().getWindow()), "Followers", followers).show());
+                Platform.runLater(() -> new UserListModal(((Stage) rootContainer.getScene().getWindow()), "Followers", followers, () -> {
+                    // When a follow action happens in the modal, refresh stats
+                    refreshPosts();
+                }).show());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -194,7 +197,10 @@ public class ProfileView {
          new Thread(() -> {
             try {
                 ArrayList<User> following = followService.getFollowings(user.getID());
-                Platform.runLater(() -> new UserListModal(((Stage) rootContainer.getScene().getWindow()), "Following", following).show());
+                Platform.runLater(() -> new UserListModal(((Stage) rootContainer.getScene().getWindow()), "Following", following, () -> {
+                    // When a follow action happens in the modal, refresh stats
+                    refreshPosts(); 
+                }).show());
             } catch (Exception e) {
                 e.printStackTrace();
             }

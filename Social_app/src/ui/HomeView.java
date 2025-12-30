@@ -46,33 +46,53 @@ public class HomeView {
         new Thread(() -> {
             try {
                 int currentUserId = SessionManager.getInstance().getCurrentUser().getID();
-                // Fetch feed
-                ArrayList<Post> posts = postService.getFeedPosts(currentUserId);
+                // Fetch followed posts
+                ArrayList<Post> followedPosts = postService.getFeedPosts(currentUserId);
                 
-                // If feed is empty (maybe new user follows no one), show their own posts or global?
-                // For now, let's also fetch user's own posts if feed is empty or just show empty message
-                if (posts.isEmpty()) {
-                     // Fetch Global Recents if feed is empty
-                     ArrayList<Post> recentPosts = postService.getRecentPosts(50);
-                     posts.addAll(recentPosts);
+                // Fetch all recent posts for exploration
+                ArrayList<Post> recentPosts = postService.getRecentPosts(50);
+                
+                // Filter out followed posts from recent posts to avoid duplicates
+                ArrayList<Integer> followedPostIds = new ArrayList<>();
+                for(Post p : followedPosts) followedPostIds.add(p.getPostID());
+                
+                ArrayList<Post> otherPosts = new ArrayList<>();
+                for(Post p : recentPosts) {
+                    if(!followedPostIds.contains(p.getPostID())) {
+                        otherPosts.add(p);
+                    }
                 }
 
                 Platform.runLater(() -> {
                     feedContainer.getChildren().clear();
-                    if (posts.isEmpty()) {
+                    
+                    if (followedPosts.isEmpty() && otherPosts.isEmpty()) {
                         Label emptyLabel = new Label("Welcome! Be the first to post something.");
                         emptyLabel.getStyleClass().add("subtitle-text");
                         feedContainer.getChildren().add(emptyLabel);
                     } else {
-                        // Title for Feed
-                        if (postService.getUserPostsCount(currentUserId) == 0 && posts.size() > 0) {
-                             Label exploreLabel = new Label("Explore Recent Posts");
-                             exploreLabel.getStyleClass().add("section-title");
-                             feedContainer.getChildren().add(exploreLabel);
+                        // Followed Section
+                        if (!followedPosts.isEmpty()) {
+                            Label followedLabel = new Label("From People You Follow");
+                            followedLabel.getStyleClass().add("section-title");
+                            followedLabel.setStyle("-fx-text-fill: #60a5fa; -fx-font-weight: bold;");
+                            feedContainer.getChildren().add(followedLabel);
+                            
+                            for (Post p : followedPosts) {
+                                feedContainer.getChildren().add(new PostCard(p));
+                            }
                         }
                         
-                        for (Post p : posts) {
-                            feedContainer.getChildren().add(new PostCard(p));
+                        // Explore Section
+                        if (!otherPosts.isEmpty()) {
+                            Label exploreLabel = new Label(followedPosts.isEmpty() ? "Explore Posts" : "More to Explore");
+                            exploreLabel.getStyleClass().add("section-title");
+                            exploreLabel.setStyle("-fx-text-fill: #a78bfa; -fx-font-weight: bold; -fx-padding: 30 0 10 0;");
+                            feedContainer.getChildren().add(exploreLabel);
+                            
+                            for (Post p : otherPosts) {
+                                feedContainer.getChildren().add(new PostCard(p));
+                            }
                         }
                     }
                 });

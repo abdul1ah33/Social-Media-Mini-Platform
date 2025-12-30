@@ -65,21 +65,87 @@ public class PostCard extends VBox {
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
 
-        Circle avatar = new Circle(18, Color.web("#667EEA"));
+        // Create avatar with profile pic support
+        javafx.scene.image.ImageView avatar = new javafx.scene.image.ImageView();
+        avatar.setFitWidth(40);
+        avatar.setFitHeight(40);
+        avatar.setPreserveRatio(true);
+        javafx.scene.shape.Circle clip = new javafx.scene.shape.Circle(20, 20, 20);
+        avatar.setClip(clip);
+
+        boolean hasPic = false;
+        if (author != null && author.getProfilePicturePath() != null && !author.getProfilePicturePath().isEmpty()) {
+            try {
+                java.io.File file = new java.io.File(author.getProfilePicturePath());
+                if (file.exists()) {
+                    avatar.setImage(new javafx.scene.image.Image(file.toURI().toString()));
+                    hasPic = true;
+                }
+            } catch (Exception e) { e.printStackTrace(); }
+        }
+
+        if (!hasPic) {
+             // Fallback to circle
+             Circle defaultAvatar = new Circle(20, Color.web("#667EEA"));
+             defaultAvatar.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(59, 130, 246, 0.4), 5, 0, 0, 2);");
+             header.getChildren().add(defaultAvatar);
+        } else {
+             avatar.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);");
+             header.getChildren().add(avatar);
+        }
         
         VBox metaBox = new VBox(2);
+        
+        // Name and Follow Button Row
+        HBox nameRow = new HBox(8);
+        nameRow.setAlignment(Pos.CENTER_LEFT);
+        
         Text nameText = new Text(authorName);
         nameText.getStyleClass().add("post-header-text");
         
+        nameRow.getChildren().add(nameText);
+
+        // Add Follow Button if not self
+        if (post.getUserID() != currentUser.getID()) {
+            Button followActionBtn = new Button("Follow");
+            followActionBtn.getStyleClass().add("tiny-action-button"); // You might need to add this style or use minimal styling
+            followActionBtn.setStyle("-fx-font-size: 10px; -fx-padding: 2 6; -fx-background-color: transparent; -fx-text-fill: #3b82f6; -fx-border-color: #3b82f6; -fx-border-radius: 4; -fx-cursor: hand;");
+            
+            // Check initial state
+            service.FollowService fs = new service.FollowService();
+            // We need to run this in background or just do it since it's one query
+            try {
+                boolean isFollowingAuthor = fs.isFollowing(currentUser.getID(), post.getUserID());
+                updateFollowBtnStyle(followActionBtn, isFollowingAuthor);
+                
+                followActionBtn.setOnAction(e -> {
+                    try {
+                        boolean currentStatus = followActionBtn.getText().equalsIgnoreCase("Following");
+                        if (currentStatus) {
+                            fs.unfollowUser(currentUser.getID(), post.getUserID());
+                            updateFollowBtnStyle(followActionBtn, false);
+                        } else {
+                            fs.followUser(currentUser.getID(), post.getUserID());
+                            updateFollowBtnStyle(followActionBtn, true);
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+                
+                nameRow.getChildren().add(followActionBtn);
+            } catch (Exception e) { e.printStackTrace(); }
+        }
+
         String dateStr = post.getPostCreationDate() != null 
                 ? post.getPostCreationDate().format(DateTimeFormatter.ofPattern("MMM dd, HH:mm"))
                 : "Just now";
         Text dateText = new Text(dateStr);
         dateText.getStyleClass().add("post-date-text");
-
-        metaBox.getChildren().addAll(nameText, dateText);
-
-        header.getChildren().addAll(avatar, metaBox);
+        
+        metaBox.getChildren().addAll(nameRow, dateText);
+        
+        header.getChildren().addAll(metaBox);
 
         // Content
         Text contentText = new Text(post.getText());
@@ -220,9 +286,14 @@ public class PostCard extends VBox {
     }
     
     private void showComments() {
-        // Open Comment Modal
+        // Open Comment Modal with callback to update count
          javafx.application.Platform.runLater(() -> 
-                new CommentModal((javafx.stage.Stage) getScene().getWindow(), post.getPostID()).show()
+                new CommentModal((javafx.stage.Stage) getScene().getWindow(), post.getPostID(), () -> {
+                    // Update count on UI thread
+                    javafx.application.Platform.runLater(() -> {
+                         commentBtn.setText("Comment (" + getCommentCount() + ")");
+                    });
+                }).show()
          );
     }
 
@@ -232,6 +303,16 @@ public class PostCard extends VBox {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private void updateFollowBtnStyle(Button btn, boolean isFollowing) {
+        if (isFollowing) {
+            btn.setText("Following");
+            btn.setStyle("-fx-font-size: 10px; -fx-padding: 2 6; -fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 4; -fx-cursor: hand;");
+        } else {
+            btn.setText("Follow");
+            btn.setStyle("-fx-font-size: 10px; -fx-padding: 2 6; -fx-background-color: transparent; -fx-text-fill: #3b82f6; -fx-border-color: #3b82f6; -fx-border-radius: 4; -fx-cursor: hand;");
         }
     }
 }

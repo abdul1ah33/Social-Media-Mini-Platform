@@ -25,16 +25,26 @@ public class UserListModal {
     private final boolean allowSearch;
     private Stage modalStage;
     private VBox listContainer;
+    private final Runnable onUpdate;
 
     public UserListModal(Stage parentStage, String title, ArrayList<User> users) {
-        this(parentStage, title, users, false);
+        this(parentStage, title, users, false, null);
+    }
+    
+    public UserListModal(Stage parentStage, String title, ArrayList<User> users, Runnable onUpdate) {
+        this(parentStage, title, users, false, onUpdate);
     }
 
     public UserListModal(Stage parentStage, String title, ArrayList<User> users, boolean allowSearch) {
+        this(parentStage, title, users, allowSearch, null);
+    }
+
+    public UserListModal(Stage parentStage, String title, ArrayList<User> users, boolean allowSearch, Runnable onUpdate) {
         this.parentStage = parentStage;
         this.title = title;
         this.users = users;
         this.allowSearch = allowSearch;
+        this.onUpdate = onUpdate;
     }
 
     public void show() {
@@ -116,6 +126,7 @@ public class UserListModal {
             for (User u : userList) {
                 listContainer.getChildren().add(new UserCard(u, () -> {
                     // Refresh if needed
+                    if (onUpdate != null) onUpdate.run();
                 }));
             }
         }

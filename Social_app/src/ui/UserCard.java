@@ -71,15 +71,21 @@ public class UserCard extends HBox {
             
             actionBtn.setOnAction(e -> {
                 animateButton(actionBtn);
-                if (isFollowing) {
-                    followService.unfollowUser(currentUser.getID(), user.getID());
-                    isFollowing = false;
-                } else {
-                    followService.followUser(currentUser.getID(), user.getID());
-                    isFollowing = true;
+                try {
+                    if (isFollowing) {
+                        followService.unfollowUser(currentUser.getID(), user.getID());
+                        isFollowing = false;
+                    } else {
+                        followService.followUser(currentUser.getID(), user.getID());
+                        isFollowing = true;
+                    }
+                    updateButtonState(actionBtn);
+                    if (onActionComplete != null) onActionComplete.run();
+                } catch (Exception ex) {
+                    System.err.println("Error changing follow status: " + ex.getMessage());
+                    // Re-sync state with database in case of mismatch
+                    checkFollowStatus(actionBtn);
                 }
-                updateButtonState(actionBtn);
-                if (onActionComplete != null) onActionComplete.run();
             });
         }
         

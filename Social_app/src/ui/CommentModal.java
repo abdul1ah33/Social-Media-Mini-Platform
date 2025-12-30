@@ -27,11 +27,13 @@ public class CommentModal {
     private final CommentService commentService;
     private Stage modalStage;
     private VBox commentsContainer;
+    private final Runnable onUpdate; // Callback for parent to refresh count
 
-    public CommentModal(Stage parentStage, int postId) {
+    public CommentModal(Stage parentStage, int postId, Runnable onUpdate) {
         this.parentStage = parentStage;
         this.postId = postId;
         this.commentService = new CommentService();
+        this.onUpdate = onUpdate;
     }
 
     public void show() {
@@ -117,6 +119,8 @@ public class CommentModal {
         row.setStyle("-fx-background-color: #4A5568; -fx-background-radius: 8;");
         
         HBox meta = new HBox(10);
+        meta.setAlignment(Pos.CENTER_LEFT);
+        
         Text name = new Text(c.getUser().getUserName());
         name.setStyle("-fx-font-weight: bold; -fx-fill: #E2E8F0;");
         
@@ -127,12 +131,38 @@ public class CommentModal {
         
         meta.getChildren().addAll(name, time);
         
+        // Spacer
+        javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
+        javafx.scene.layout.HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+        meta.getChildren().add(spacer);
+        
+        // Delete button if owner or admin
+        boolean isOwner = SessionManager.getInstance().getCurrentUser().getID() == c.getUser().getID();
+        boolean isAdmin = SessionManager.getInstance().isAdmin();
+        
+        if (isOwner || isAdmin) {
+             Button deleteBtn = new Button("X");
+             deleteBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #FC8181; -fx-font-size: 10px; -fx-font-weight: bold; -fx-cursor: hand;");
+             deleteBtn.setOnAction(e -> handleDeleteComment(c.getCommentID()));
+             meta.getChildren().add(deleteBtn);
+        }
+        
         Text content = new Text(c.getContent());
         content.setStyle("-fx-fill: white;");
         content.setWrappingWidth(380);
         
         row.getChildren().addAll(meta, content);
         return row;
+    }
+
+    private void handleDeleteComment(int commentId) {
+        try {
+            commentService.deleteComment(commentId);
+            loadComments(); // Refresh list
+            if (onUpdate != null) onUpdate.run(); // Notify parent
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleSend(String text, TextArea inputField) {
@@ -143,6 +173,7 @@ public class CommentModal {
             commentService.CreateComment(comment);
             inputField.clear();
             loadComments();
+            if (onUpdate != null) onUpdate.run(); // Notify parent
         } catch (Exception e) {
             e.printStackTrace();
         }

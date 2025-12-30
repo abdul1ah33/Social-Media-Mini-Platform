@@ -18,6 +18,7 @@ public class UserDAO implements CRUDInterface<User> {
     private User mapRowToUser(ResultSet rs) throws SQLException {
 
         User user = new User();
+        user.setID(rs.getInt("id"));
         user.setUserName(rs.getString("username"));
         user.setFirstName(rs.getString("firstname"));
         user.setLastName(rs.getString("lastname"));
