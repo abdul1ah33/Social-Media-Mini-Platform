@@ -1,4 +1,4 @@
-package test.SERVICE;
+package test.Service;
 
 import service.PostService;
 import model.Post;
