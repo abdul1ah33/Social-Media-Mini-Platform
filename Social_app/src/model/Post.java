@@ -42,7 +42,7 @@ public class Post {
     public void setImagePath(String imagePath) {this.imagePath = imagePath;}
     public void setUserID(int userID) {this.userID = userID;}
     public void setPostCategory(String postCategory) {this.postCategory = postCategory;}
-    public void setPostID(int PostID) {this.postID = postID;}
+    public void setPostID(int PostID) {this.postID = PostID;}
     public void setPostCreationDate(LocalDateTime date){this.postCreationDate = date;}
 
     // Methods
