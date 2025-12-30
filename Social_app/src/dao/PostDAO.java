@@ -9,9 +9,7 @@ import java.util.ArrayList;
 
 public class PostDAO implements CRUDInterface<Post> {
 
-    /* ==========================
-       ROW MAPPING
-       ========================== */
+
     private Post mapRowToPost(ResultSet rs) throws SQLException {
 
         Post post = new Post();
@@ -29,9 +27,7 @@ public class PostDAO implements CRUDInterface<Post> {
         return post;
     }
 
-    /* ==========================
-       CREATE
-       ========================== */
+
     @Override
     public boolean add(Post post) {
 
@@ -62,9 +58,7 @@ public class PostDAO implements CRUDInterface<Post> {
         }
     }
 
-    /* ==========================
-       READ (by ID)
-       ========================== */
+
     @Override
     public Post getDetails(int id) {
 
@@ -87,9 +81,7 @@ public class PostDAO implements CRUDInterface<Post> {
         }
     }
 
-    /* ==========================
-       UPDATE (PATCH STYLE)
-       ========================== */
+
     @Override
     public boolean update(Post post, int id) {
 
@@ -133,9 +125,7 @@ public class PostDAO implements CRUDInterface<Post> {
         }
     }
 
-    /* ==========================
-       DELETE
-       ========================== */
+
     @Override
     public boolean delete(int id) {
 
@@ -152,9 +142,7 @@ public class PostDAO implements CRUDInterface<Post> {
         }
     }
 
-    /* ==========================
-       POSTS BY USER
-       ========================== */
+
     public ArrayList<Post> getPostsByUser(Connection conn, int userId) {
 
         String sql = """
@@ -182,9 +170,7 @@ public class PostDAO implements CRUDInterface<Post> {
         }
     }
 
-    /* ==========================
-       POSTS COUNT BY USER
-       ========================== */
+
     public int getPostsCountByUser(Connection conn, int userId) {
 
         String sql = "SELECT COUNT(*) FROM posts WHERE user_id = ?";
