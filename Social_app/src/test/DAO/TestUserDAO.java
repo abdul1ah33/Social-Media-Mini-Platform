@@ -14,10 +14,10 @@ public class TestUserDAO {
         if (input.nextInt() == 1) {
             // 1️⃣ Create a new User object
             User user = new User();
-            user.setUserName("Nour");
-            user.setFirstName("Nour");
+            user.setUserName("Omar");
+            user.setFirstName("Omar");
             user.setLastName("Ayman");
-            user.setEmail("Nour.Ayman@example.com");
+            user.setEmail("Omar1.Ayman@example.com");
             user.setPassword("password");
             user.setBirthDate(LocalDate.of(2000, 1, 15));
             user.setBio("Hello! I'm Nour1.");
