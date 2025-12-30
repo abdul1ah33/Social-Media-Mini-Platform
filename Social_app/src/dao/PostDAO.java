@@ -29,7 +29,7 @@ public class PostDAO implements CRUDInterface<Post> {
 
 
     @Override
-    public boolean add(Post post) {
+    public boolean add(Connection conn, Post post) {
 
         String sql = """
             INSERT INTO posts
@@ -37,8 +37,7 @@ public class PostDAO implements CRUDInterface<Post> {
             VALUES (?, ?, ?, ?, ?)
         """;
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, post.getUserID());
             stmt.setString(2, post.getText());
@@ -60,12 +59,11 @@ public class PostDAO implements CRUDInterface<Post> {
 
 
     @Override
-    public Post getDetails(int id) {
+    public Post getDetails(Connection conn, int id) {
 
         String sql = "SELECT * FROM posts WHERE id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -83,7 +81,7 @@ public class PostDAO implements CRUDInterface<Post> {
 
 
     @Override
-    public boolean update(Post post, int id) {
+    public boolean update(Connection conn, Post post, int id) {
 
         StringBuilder sql = new StringBuilder("UPDATE posts SET ");
         ArrayList<Object> values = new ArrayList<>();
@@ -111,8 +109,7 @@ public class PostDAO implements CRUDInterface<Post> {
         sql.append(" WHERE id = ?");
         values.add(id);
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < values.size(); i++) {
                 stmt.setObject(i + 1, values.get(i));
@@ -127,12 +124,11 @@ public class PostDAO implements CRUDInterface<Post> {
 
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(Connection conn, int id) {
 
         String sql = "DELETE FROM posts WHERE id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;

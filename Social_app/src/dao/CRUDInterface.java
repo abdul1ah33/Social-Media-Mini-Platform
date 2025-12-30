@@ -1,9 +1,13 @@
 package dao;
 
+import com.mysql.cj.exceptions.ConnectionIsClosedException;
+
+import java.sql.Connection;
+
 public interface CRUDInterface<T> {
 
-    boolean add(T entity);
-    T getDetails(int id);
-    boolean update(T entity, int id);
-    boolean delete(int id);
+    boolean add(Connection conn, T entity);
+    T getDetails(Connection conn, int id);
+    boolean update(Connection conn, T entity, int id);
+    boolean delete(Connection conn, int id);
 }

@@ -46,10 +46,10 @@ public class UserDAO implements CRUDInterface<User> {
 
     // Add a user to the system
     @Override
-    public boolean add(User user) {
+    public boolean add(Connection conn, User user) {
         String sql = "INSERT INTO users (username, firstname, lastname, email, password, birthdate, bio) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, user.getUserName());
             stmt.setString(2, user.getFirstName());
@@ -73,11 +73,10 @@ public class UserDAO implements CRUDInterface<User> {
 
     // get a user from the system (just ONE user)
     @Override
-    public User getDetails(int id) {
+    public User getDetails(Connection conn,int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -105,7 +104,7 @@ public class UserDAO implements CRUDInterface<User> {
        so the update method is adapting based on the parameters itself
      */
     @Override
-    public boolean update(User user, int id) {
+    public boolean update(Connection conn, User user, int id) {
         StringBuilder sql = new StringBuilder("UPDATE users SET ");
         ArrayList<Object> values = new ArrayList<>();
 
@@ -152,11 +151,16 @@ public class UserDAO implements CRUDInterface<User> {
         sql.append(" WHERE id = ?");
         values.add(id);
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < values.size(); i++) {
-                stmt.setObject(i + 1, values.get(i));
+                Object value = values.get(i);
+
+                if (value instanceof java.time.LocalDate) {
+                    stmt.setDate(i + 1, java.sql.Date.valueOf((java.time.LocalDate) value));
+                } else {
+                    stmt.setObject(i + 1, value);
+                }
             }
 
             int numberOfRows = stmt.executeUpdate();
@@ -173,11 +177,10 @@ public class UserDAO implements CRUDInterface<User> {
 
     // Deletes a user from the system
     @Override
-    public boolean delete(int id) {
+    public boolean delete(Connection conn, int id) {
         String sql = "DELETE FROM users WHERE id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
 
@@ -198,6 +201,47 @@ public class UserDAO implements CRUDInterface<User> {
         try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return true;
+            }
+        }
+        catch(SQLException e){
+//          e.printStackTrace();
+            System.out.println("Unable to execute query");
+        }
+
+        return false;
+    }
+
+
+    public boolean existUsername(Connection conn, String username) {
+        String sql = "SELECT username FROM users WHERE username = ?";
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return true;
+            }
+        }
+        catch(SQLException e){
+//          e.printStackTrace();
+            System.out.println("Unable to execute query");
+        }
+
+        return false;
+    }
+
+    public boolean existEmail(Connection conn, String email) {
+        String sql = "SELECT email FROM users WHERE email = ?";
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {

@@ -37,7 +37,7 @@ public class PostService {
                 throw new IllegalArgumentException("User does not exist");
             }
 
-            boolean success = postDAO.add(post);
+            boolean success = postDAO.add(conn, post);
             if (!success) {
                 throw new RuntimeException("Failed to create post");
             }
@@ -59,7 +59,7 @@ public class PostService {
         }
 
         try (Connection conn = DBConnection.getConnection()) {
-            Post post = postDAO.getDetails(postId);
+            Post post = postDAO.getDetails(conn, postId);
             if (post == null) {
                 throw new IllegalArgumentException("Post not found with ID: " + postId);
             }
@@ -77,7 +77,7 @@ public class PostService {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
 
-            Post existing = postDAO.getDetails(postId);
+            Post existing = postDAO.getDetails(conn, postId);
             if (existing == null) {
                 throw new IllegalArgumentException("Post not found");
             }
@@ -86,7 +86,7 @@ public class PostService {
                 throw new IllegalArgumentException("User not authorized to update this post");
             }
 
-            boolean success = postDAO.update(updatedPost, postId);
+            boolean success = postDAO.update(conn, updatedPost, postId);
             if (!success) {
                 throw new RuntimeException("No changes applied to the post");
             }
@@ -108,7 +108,7 @@ public class PostService {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
 
-            Post existing = postDAO.getDetails(postId);
+            Post existing = postDAO.getDetails(conn, postId);
             if (existing == null) {
                 throw new IllegalArgumentException("Post not found");
             }
@@ -117,7 +117,7 @@ public class PostService {
                 throw new IllegalArgumentException("User not authorized to delete this post");
             }
 
-            boolean success = postDAO.delete(postId);
+            boolean success = postDAO.delete(conn, postId);
             if (!success) {
                 throw new RuntimeException("Failed to delete post");
             }
@@ -201,7 +201,7 @@ public class PostService {
 
     public boolean postExists(int postId) {
         try (Connection conn = DBConnection.getConnection()) {
-            Post post = postDAO.getDetails(postId);
+            Post post = postDAO.getDetails(conn, postId);
             return post != null;
         } catch (SQLException e) {
             throw new RuntimeException("Database error while checking post existence", e);

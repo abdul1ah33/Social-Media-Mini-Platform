@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class User extends Account {
@@ -11,6 +12,24 @@ public class User extends Account {
     private int followersCount;
     private int followingsCount;
     private ArrayList<Post> posts;
+
+
+    public User() {
+        Followers = new ArrayList<>();
+        Followings = new ArrayList<>();
+        posts = new ArrayList<>();
+    }
+
+    public User(String userName, String password, String firstName, String lastName, String email, LocalDate birthDate) {
+        this();
+        this.setUserName(userName);
+        this.setPassword(password);
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setEmail(email);
+        this.setBirthDate(birthDate);
+    }
+
 
     // Getters
     public ArrayList<User> getFollowers() { return Followers; }

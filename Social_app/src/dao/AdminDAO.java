@@ -11,10 +11,9 @@ public class AdminDAO implements CRUDInterface<Admin>{
 
     // Add an admin to the system
     @Override
-    public boolean add(Admin admin) {
+    public boolean add(Connection conn, Admin admin) {
         String sql = "INSERT INTO users (username, firstname, lastname, email, password, birthdate, bio) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, admin.getUserName());
             stmt.setString(2, admin.getFirstName());
@@ -37,11 +36,10 @@ public class AdminDAO implements CRUDInterface<Admin>{
 
     // get an admin from the system (just ONE Admin)
     @Override
-    public Admin getDetails(int id) {
+    public Admin getDetails(Connection conn, int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -69,7 +67,7 @@ public class AdminDAO implements CRUDInterface<Admin>{
 
     // Update data (look at UserDAO for better understanding)
     @Override
-    public boolean update(Admin admin, int id) {
+    public boolean update(Connection conn, Admin admin, int id) {
         StringBuilder sql = new StringBuilder("UPDATE admins SET ");
         ArrayList<Object> values = new ArrayList<>();
 
@@ -111,8 +109,7 @@ public class AdminDAO implements CRUDInterface<Admin>{
         sql.append(" WHERE id = ?");
         values.add(id);
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < values.size(); i++) {
                 stmt.setObject(i + 1, values.get(i));
@@ -132,11 +129,10 @@ public class AdminDAO implements CRUDInterface<Admin>{
 
     // delete 3ady
     @Override
-    public boolean delete(int id) {
+    public boolean delete(Connection conn, int id) {
         String sql = "DELETE FROM admins WHERE id = ?";
 
-        try(Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
 
